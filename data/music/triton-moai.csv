@@ -1,0 +1,160 @@
+Piano,Fa#2	Piano,Fa#4	sfx(SFX_DRUM_SHORT_RE)
+Fa#3		
+Fa#2		sfx(sfx_open_hihat)
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+Fa#2		
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+Fa#2	Do#4	sfx(sfx_open_hihat)
+Fa#3	Fa#4	sfx(SFX_DRUM_SHORT_RE)
+La2	Mi4	sfx(SFX_DRUM_SHORT_RE)
+La3		
+La2		sfx(sfx_open_hihat)
+La3		sfx(SFX_DRUM_SHORT_RE)
+La2		
+La3		sfx(SFX_DRUM_SHORT_RE)
+La2		sfx(sfx_open_hihat)
+La3		
+Si2	Re4	sfx(SFX_DRUM_SHORT_RE)
+Si3		
+Si2	Re4	sfx(sfx_open_hihat)
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Si2	Do#4	
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Si2	Si3	sfx(sfx_open_hihat)
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Do#3	Do#4	sfx(SFX_DRUM_SHORT_RE)
+Do#4		
+Do#3		sfx(sfx_open_hihat)
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Do#3	La3	
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Do#3		sfx(sfx_open_hihat)
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Fa#2	Fa#4	sfx(SFX_DRUM_SHORT_RE)
+Fa#3		
+Fa#2		sfx(sfx_open_hihat)
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+Fa#2		
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+Fa#2	Do#4	sfx(sfx_open_hihat)
+Fa#3	Fa#4	
+La2	Mi4	sfx(SFX_DRUM_SHORT_RE)
+La3		
+La2		sfx(sfx_open_hihat)
+La3		sfx(SFX_DRUM_SHORT_RE)
+La2		
+La3		sfx(SFX_DRUM_SHORT_RE)
+La2		sfx(sfx_open_hihat)
+La3		sfx(SFX_DRUM_SHORT_RE)
+Si2	Re4	sfx(SFX_DRUM_SHORT_RE)
+Si3		
+Si2	Mi4	sfx(sfx_open_hihat)
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Si2	Fa#4	
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Si2	Sol#4	sfx(sfx_open_hihat)
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Do#3	Fa#4	sfx(SFX_DRUM_SHORT_RE)
+Do#4		
+Do#3	Fa4	sfx(sfx_open_hihat)
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Do#3	Re#4	
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Do#3	Fa4	sfx(sfx_open_hihat)
+Do#4		
+Do#3	Fa#3	sfx(SFX_DRUM_SHORT_RE)
+Do#3	Fa#3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+Do#3	Fa#3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+Do#3	Fa#3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+La2	Mi3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+		
+		sfx(sfx_short_hihat)
+		
+		sfx(sfx_short_hihat)
+		
+		sfx(sfx_short_hihat)
+		
+Mi3	La3	sfx(SFX_DRUM_SHORT_RE)
+Mi3	La3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+Mi3	La3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+Mi3	La3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+Re#3	Sol#3	sfx(SFX_DRUM_SHORT_RE)
+		sfx(sfx_short_hihat)
+		
+Si2		sfx(sfx_short_hihat)
+		
+La2		sfx(sfx_short_hihat)
+		
+Sol#2		sfx(sfx_short_hihat)
+		
+Repeat(2),Repeat(2),Fa#2	La5	sfx(SFX_DRUM_SHORT_RE)
+Fa#3	Fa#5	
+Fa#2	Do#5	sfx(sfx_open_hihat)
+Fa#3	La4	sfx(SFX_DRUM_SHORT_RE)
+Fa#2	La5	
+Fa#3	Fa#5	sfx(SFX_DRUM_SHORT_RE)
+Fa#2	Do#5	sfx(sfx_open_hihat)
+Fa#3	La4	
+EndRepeat,Repeat(2),Re2	La5	sfx(SFX_DRUM_SHORT_RE)
+Re3	Fa5	
+Re2	Re5	sfx(sfx_open_hihat)
+Re3	La4	sfx(SFX_DRUM_SHORT_RE)
+Re2	La5	
+Re3	Fa5	sfx(SFX_DRUM_SHORT_RE)
+Re2	Re5	sfx(sfx_open_hihat)
+Re3	La4	
+EndRepeat,Repeat(2),Fa#2	La5	sfx(SFX_DRUM_SHORT_RE)
+Fa#3	Fa#5	
+Fa#2	Do#5	sfx(sfx_open_hihat)
+Fa#3	La4	sfx(SFX_DRUM_SHORT_RE)
+Fa#2	La5	
+Fa#3	Fa#5	sfx(SFX_DRUM_SHORT_RE)
+Fa#2	Do#5	sfx(sfx_open_hihat)
+Fa#3	La4	
+EndRepeat, Repeat(2),La1	La5	sfx(SFX_DRUM_SHORT_RE)
+La2	Mi5	
+La1	Do5	sfx(sfx_open_hihat)
+La2	La4	sfx(SFX_DRUM_SHORT_RE)
+La1	La5	
+La2	Mi5	sfx(SFX_DRUM_SHORT_RE)
+La1	Do5	sfx(sfx_open_hihat)
+La2	La4	
+EndRepeat,EndRepeat,Fa#2	-	sfx(SFX_DRUM_SHORT_RE)
+Fa#3		
+Fa#2		sfx(sfx_open_hihat)
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+Fa#2		
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+Fa#2		sfx(sfx_open_hihat)
+Fa#3		sfx(SFX_DRUM_SHORT_RE)
+La2		sfx(SFX_DRUM_SHORT_RE)
+La3		
+La2		sfx(sfx_open_hihat)
+La3		sfx(SFX_DRUM_SHORT_RE)
+La2		
+La3		sfx(SFX_DRUM_SHORT_RE)
+La2		sfx(sfx_open_hihat)
+La3		
+Si2		sfx(SFX_DRUM_SHORT_RE)
+Si3		
+Si2		sfx(sfx_open_hihat)
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Si2		
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Si2		sfx(sfx_open_hihat)
+Si3		sfx(SFX_DRUM_SHORT_RE)
+Do#3		sfx(SFX_DRUM_SHORT_RE)
+Do#4		
+Do#3		sfx(sfx_open_hihat)
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Do#3		
+Do#4		sfx(SFX_DRUM_SHORT_RE)
+Do#3		sfx(sfx_open_hihat)
+Do#4		sfx(SFX_DRUM_SHORT_RE)

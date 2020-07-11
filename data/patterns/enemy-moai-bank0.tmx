@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="5" height="4" tilewidth="8" tileheight="8" nextobjectid="1">
+ <tileset firstgid="1" name="moai-tiles" tilewidth="8" tileheight="8" tilecount="256" columns="16">
+  <image source="moai-tiles.png" width="128" height="128"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="5" height="4">
+  <data encoding="csv">
+1,33,34,35,1,
+1,36,37,38,39,
+1,40,41,42,43,
+1,1,1,44,45
+</data>
+ </layer>
+</map>

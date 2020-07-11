@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="3" height="12" tilewidth="8" tileheight="8" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="tech-tiles" tilewidth="8" tileheight="8" tilecount="256" columns="16">
+  <image source="tech-tiles.png" width="128" height="128"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="3" height="12">
+  <data encoding="csv">
+1,53,54,
+1,55,52,
+1,49,50,
+1,55,52,
+1,81,82,
+1,55,52,
+1,53,54,
+1,58,57,
+1,49,50,
+1,58,57,
+1,81,82,
+1,58,57
+</data>
+ </layer>
+</map>
