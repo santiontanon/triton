@@ -15,7 +15,9 @@ The Menace from Triton is a horizontal shooting game inspired in some of my favo
 
 Screenshots (of version 1.0):
 
-...
+<img src="https://github.com/santiontanon/triton/blob/master/media/ss1.png" alt="title" width="400"/> <img src="https://github.com/santiontanon/triton/blob/master/media/ss2.png" alt="mission screen" width="400"/>
+
+<img src="https://github.com/santiontanon/triton/blob/master/media/ss3.png" alt="in game 1" width="400"/> <img src="https://github.com/santiontanon/triton/blob/master/media/ss4.png" alt="in game 2" width="400"/>
 
 You can see a video of the game at: ...
 
