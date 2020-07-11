@@ -60,8 +60,11 @@ mission_cutscene_7_text:
 ;-----------------------------------------------
 play_mission_song:
 	call StopMusic
-	ld ix,decompress_mission_song_from_page1
-	call call_from_page1
+; 	ld ix,decompress_mission_song_from_page1
+; 	call call_from_page1
+	ld hl,mission_song_pletter
+	ld de,music_buffer
+	call unpack_compressed
     ld a,(isComputer50HzOr60Hz)
     add a,5	; 6 if 50Hz, 7 if 60Hz
     jp PlayMusic
