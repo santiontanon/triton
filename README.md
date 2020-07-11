@@ -61,7 +61,7 @@ The game was designed to be played on MSX1 computers with at least 16KB of RAM. 
 
 Some notes and useful links I used when coding XRacing
 
-* There is a "build" script in the home folder. Use it to re-build the game from sources. There is a collectino of data files that are generated via a collection of Java scripts. Those are found in the "java" folder. You can re-generate all the data files by running the "Main.java" class (some of them take quite some time to run, so be patient!)
+* There is a "build" script in the home folder. Use it to re-build the game from sources. There is a collection of data files that are generated via a collection of Java scripts. Those are found in the "java" folder. You can re-generate all the data files by running the "Main.java" class (some of them take quite some time to run, so be patient! Also, you will need oapack compiled for your operative system (not included) inside of the java folder as well)
 * I used my own MDL Z80 code optimizer to help me save a few bytes/cycles here and there: https://github.com/santiontanon/mdlz80optimizer
 * Math routines: http://z80-heaven.wikidot.com/math
 * PSG (sound) registers: http://www.angelfire.com/art2/unicorndreams/msx/RR-PSG.html
