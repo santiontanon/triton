@@ -613,19 +613,17 @@ get_minimap_pointer_done:
 ; - nz: no playable planet
 state_mission_screen_pointer_over_playable_planet:
 	; check if clicked over triton: (position 0,12)
-	ld hl,ui_cursor_area
-	ld a,(hl)
+	call get_minimap_pointer
+	ld a,(ui_cursor_area)
 	or a
 	jr nz,state_mission_screen_pointer_over_playable_planet_not_triton
-	inc hl
-	ld a,(hl)
+	ld a,(ui_cursor_position)
 	cp 12
 	jr nz,state_mission_screen_pointer_over_playable_planet_not_triton
 	; clicked on triton!
 	jr state_mission_screen_pointer_over_playable_planet_continue
 
 state_mission_screen_pointer_over_playable_planet_not_triton:
-	call get_minimap_pointer
 	ld a,(hl)
 	cp 83	; nebula
 	jr z,state_mission_screen_pointer_over_playable_planet_nebula
