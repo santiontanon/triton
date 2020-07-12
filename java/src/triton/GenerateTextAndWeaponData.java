@@ -194,7 +194,7 @@ public class GenerateTextAndWeaponData {
         lines_with_constant.put("YOU HAVE GONE TOO FAR!", "CUTSCENE_5_3");
         lines_with_constant.put("NO ONE BUT THE TRITON EMPIRE WILL RULE", "CUTSCENE_5_4");
         lines_with_constant.put("THE GALAXY!", "CUTSCENE_5_5");
-        lines_with_constant.put("YOU WILL BE ANIHILATED!!", "CUTSCENE_5_6");
+        lines_with_constant.put("YOU WILL BE ANNIHILATED!!", "CUTSCENE_5_6");
         
         lines_with_constant.put("UNFORTUNATELY THE MISSION FAILED.", "M_CUTSCENE_0_1");
         lines_with_constant.put("NO PILOTS SURVIVED...", "M_CUTSCENE_0_2");
