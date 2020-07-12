@@ -19,15 +19,27 @@ Screenshots (of version 1.0):
 
 <img src="https://github.com/santiontanon/triton/blob/master/media/ss3.png" alt="in game 1" width="400"/> <img src="https://github.com/santiontanon/triton/blob/master/media/ss4.png" alt="in game 2" width="400"/>
 
-You can see a video of the game at: ...
+You can see a video of the game at: https://www.youtube.com/watch?v=0iCriF_JaeU
 
 ### Story
 
-...
+Year 9918. Humanity had spread across the galaxy, colonizing planet after planet. It was a new golden age! Until something went wrong...
+
+Scout ship ARGO-1 was on a routine scouting mission near Aigai Nebula, on the edge of human-colonized space. They were not expecting to find anything, however, they came into contact with an unknown object which was reported to look like a "giant head". All communication attempts failed. Shortly after, communication with ARGO-1 was lost. 
+
+After the mysterious disappearance, however, the nature of the unknown object quickly became clear. Ithaki Base, the closest military base to the ARGO-1 received an ominous transmission that changed the prospects of space colonization:
+
+"Humans!!! We have been watching you... You have gone too far! No one but the Triton Empire will rule the galazy! You will be anihilated!"
+
+Humanity was at war!
+
+An offensive against the evil Triton Empire was planned arount Ithaki Base before it was too late. Here is where you come into the picture! You will take command of one of the fighter ships sent to counter the Triton Empire, good luck! Humanity's future is in your hands!
+
 
 ### Game Goal
 
-...
+The ultimate goal is to reach the Triton homeworld and defeat Triton himself! In order to do this, you will have to conquer planet after planet, getting closer and closer to Triton. However, before that, you will have to find a way to cross Aigai Nebula!
+
 
 ### The Mission Screen
 
