@@ -7,7 +7,7 @@ You will need an MSX emulator to play the game on a PC, for example OpenMSX: htt
 
 ## Introduction
 
-The Menace from Triton is an MSX1 game, in a 48KB ROM cartridge format, built to participate in the MSXDev'20 competition ( https://www.msxdev.org ).
+The Menace from Triton is an MSX1 game, in a 48KB ROM cartridge format, built to participate in the MSXDev'20 competition ( https://www.msxdev.org ). The dificulty is tuned for 60Hz machines. If you play in a 50Hz machine, consider as if you are playing an "easy" mode of the game :)
 
 The Menace from Triton is a horizontal shooting game inspired in some of my favorite MSX classic shooters like Salamander or the Nemesis saga, but with elements of a few modern shooter games that I really like (in particular Steredenn and Z-Exemplar, which I recommend you trying!). The game combines arcade-style horizontal shooter action with the resource managing/shop mechanics of Z-Exemplar, and the procedural generation of Steredenn. The first levels start out quite easy, but the game gets harder and harder towards the end. So, make sure you upgrade your ship as much as possible, or it will be impossible to defeat Triton!
 
@@ -112,7 +112,7 @@ Hints:
 
 ## Compatibility
 
-The game was designed to be played on MSX1 computers with at least 16KB of RAM. I used the Philips VG8020 as the reference machine (since that's the MSX I owned as a kid), but I've tested it in some other machines using OpenMSX v0.15. If you detect an incompatibility, please let me know!
+The game was designed to be played on MSX1 computers with at least 16KB of RAM. I used OpenMSX v0.15 to make sure the game is compatible with lots of MSX models, but if you detect an incompatibility, please let me know!
 
 
 ## Notes:
