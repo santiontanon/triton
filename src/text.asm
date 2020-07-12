@@ -189,8 +189,8 @@ render_text_draw_buffer_slow_loop_skip:
 	    pop hl
 		; wait a few seconds and skip to the menu:
 	    ld a,(keyboard_line_clicks)
-	    bit 0,a
-	    jp z,render_text_draw_buffer_slow_loop_no_skip
+		rra
+		jp nc,render_text_draw_buffer_slow_loop_no_skip
 	    ld a,1
 	    ld (text_skip),a
 render_text_draw_buffer_slow_loop_no_skip:

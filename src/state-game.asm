@@ -57,7 +57,6 @@ state_game_start_difficulty_loop_end:
 	    ld a,(global_state_weapon_upgrade_level+WEAPON_PILOTS)
 	    ld hl,player_lives
 	    ld (hl),a
-	    ld hl,speed_up_levels
 
 	    ; initial speed:
  	    ld a,(global_state_weapon_upgrade_level+WEAPON_INITIAL_SPEED)

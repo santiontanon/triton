@@ -99,8 +99,8 @@ power_pellets_restore_bg_loop:
 	push hl
 	push de
 	push bc
-		bit 7,a
-		jp z,power_pellets_restore_bg_loop_no_deletion
+		rla
+		jp nc,power_pellets_restore_bg_loop_no_deletion
 		; it was marked for deletion, delete it
 		ld (hl),0
 power_pellets_restore_bg_loop_no_deletion:
