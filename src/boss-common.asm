@@ -157,11 +157,14 @@ update_boss_check_if_hit:
 	ld a,(hl)
 	or a
 	ret z
+	ld c,a	; store the damage to deal to the boss
 	ld (hl),0
 	inc hl	; boss_hit_gfx
+	ld a,(hl)
+	or a
+	jr nz,update_boss_check_if_hit_alive
 	ld (hl),4	; you can only hit bosses once everh 4 frames (otherwise, they are too easy with laser/flamethrower!)
 
-	ld c,a	; store the damage to deal to the boss
 	ld hl,SFX_enemy_hit
 	call play_SFX_with_high_priority
 
@@ -169,7 +172,7 @@ update_boss_check_if_hit:
 	ld a,(hl)
 	sub c
 	ld (hl),a
-	jp p,update_boss_check_if_hit_alive
+	jr nc,update_boss_check_if_hit_alive
 	or 1
 	ret
 

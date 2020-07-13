@@ -275,7 +275,7 @@ FIRST_TILEENEMY_COLLIDABLE_TILE: 		equ 207
 
 ; ------------------------------------------------
 INITIAL_CREDITS:			equ 2
-; INITIAL_CREDITS:			equ 40
+; INITIAL_CREDITS:			equ 64
 INITIAL_NUMBER_OF_LIVES:	equ 2	; 0 is the last life, so, 2 means you have 3 lives
 MAX_NUMBER_OF_LIVES:		equ 8
 INVULNERABLE_TIME:			equ 80
@@ -557,12 +557,12 @@ POLYPHEMUS_FIRST_SPRITE:	equ 64-5
 POLYPHEMUS_HEALTH:			equ 32
 
 SCYLLA_FIRST_SPRITE:		equ 64-8
-SCYLLA_HEALTH_PHASE1:		equ 64
-SCYLLA_HEALTH_PHASE2:		equ 80
+SCYLLA_HEALTH_PHASE1:		equ 72
+SCYLLA_HEALTH_PHASE2:		equ 96
 
 CHARYBDIS_FIRST_SPRITE:     equ 64-5
-CHARYBDIS_HEALTH:           equ 80
+CHARYBDIS_HEALTH:           equ 112
 CHARYBDIS_LENGTH:           equ 14
 
 TRITON_FIRST_SPRITE:        equ 64-3
-TRITON_HEALTH:              equ 144
+TRITON_HEALTH:              equ 200

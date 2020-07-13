@@ -934,13 +934,13 @@ update_charybdis_draw_organic_face_left_hit:
 	ld hl,boss_charybdis_moving_speed
 	ld (hl),-6
 	ld a,(boss_health)
-	cp 48
+	cp CHARYBDIS_HEALTH/2
 	jr nc,update_charybdis_speed_set
 	inc (hl)
-	cp 32
+	cp CHARYBDIS_HEALTH/3
 	jr nc,update_charybdis_speed_set
 	inc (hl)
-	cp 16
+	cp CHARYBDIS_HEALTH/4
 	jr nc,update_charybdis_speed_set
 	inc (hl)
 	cp 8
