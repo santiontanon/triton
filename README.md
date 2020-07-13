@@ -99,9 +99,9 @@ Controls:
 - Press F1 to pause the game (you can then press Q to abort the mission). Notice that aborting the mission will not quit the game, just the current mission, and will bring you back to the mission screen.
 
 Hints:
-- Make sure to upgrade your speed quickly, otherwise your sihp moves too slowly.
-- Initial fire cadence is very low. So, amke sure to buy upgrades to improve it.
-- Use the weapon specials carefully, the energy bar fills itself over time. But slower if your weapons are not upgraded.
+- Make sure to upgrade your speed quickly, otherwise your ship moves too slowly.
+- Initial fire cadence is very low. So, make sure to buy upgrades to improve it.
+- Use the weapon specials carefully, the energy bar recharges itself over time. But it recharges slower if your weapons are not upgraded.
 - Some enemies will drop power pellets. But remember that power pellets are fragile! If you kill an enemy too close to a wall, the power pellet that would have been dropped will disintegrate.
 
 
