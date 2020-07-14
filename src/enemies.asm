@@ -109,7 +109,7 @@ update_enemy_explosion_sprite:
 ;-----------------------------------------------
 check_enemy_to_player_collision:
 	ld a,(player_state)
-	cp PLAYER_STATE_DEFAULT
+	or a	; cp PLAYER_STATE_DEFAULT
 	ret nz
 	ld hl,scroll_x_tile
 	ld a,(ix+ENEMY_STRUCT_TILE_X)

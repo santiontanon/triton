@@ -84,9 +84,8 @@ update_player_invulnerable_state:
 	bit 2,a
 	jp z,update_player_invulnerable_state_visible
 update_player_invulnerable_state_invisible:
-	ld a,COLOR_TRANSPARENT
+	xor a
 	ld (player_sprite_attributes+3),a
-	ld a,COLOR_TRANSPARENT
 	ld (player_sprite_attributes+4+3),a
 	jp update_player_invulnerable_state_color_set
 update_player_invulnerable_state_visible:

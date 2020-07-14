@@ -63,7 +63,7 @@ update_enemy_bullet_pellet_no_wall_collision:
 
 	; collision with player:
 	ld a,(player_state)
-	cp PLAYER_STATE_DEFAULT
+	or a	; cp PLAYER_STATE_DEFAULT
 	jp nz,update_enemy_bullet_pellet_no_player_collision
 	ld c,(ix+ENEMY_BULLET_STRUCT_X)
 	ld b,(ix+ENEMY_BULLET_STRUCT_Y)
