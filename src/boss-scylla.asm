@@ -479,6 +479,13 @@ update_scylla_draw_state5_5:
 	jp copy_non_empty_enemy_tiles
 
 update_scylla_draw_phase2:
+	ld hl,boss_hit_gfx
+	ld a,(hl)
+	or a
+	jr z,update_scylla_draw_phase2_not_hit_gfx
+	dec (hl)
+update_scylla_draw_phase2_not_hit_gfx:
+
 	call update_scylla_clear
 	call get_boss_ptr
 	ld bc,-3*MAP_BUFFER_WIDTH
