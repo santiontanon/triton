@@ -275,10 +275,10 @@ FIRST_TILEENEMY_COLLIDABLE_TILE: 		equ 207
 
 ; ------------------------------------------------
 INITIAL_CREDITS:			equ 2
-; INITIAL_CREDITS:			equ 64
+; INITIAL_CREDITS:			equ 255
 INITIAL_NUMBER_OF_LIVES:	equ 2	; 0 is the last life, so, 2 means you have 3 lives
 MAX_NUMBER_OF_LIVES:		equ 8
-INVULNERABLE_TIME:			equ 80
+INVULNERABLE_TIME:			equ 128
 MINIMAP_WIDTH:				equ 26
 MINIMAP_HEIGHT:				equ 9
 

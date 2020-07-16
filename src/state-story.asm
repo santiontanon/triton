@@ -157,8 +157,15 @@ state_story_cutscene_new_line:
 	jr state_story_cutscene_loop
 
 state_story_cutscene_done_with_text:
+	ld c,0	; time counter
 state_story_loop:
 	halt
+	ld a,(interrupt_cycle)
+	and #01
+	jr nz,state_story_loop_continue
+	inc c
+	ret z
+state_story_loop_continue:
 	push bc
 	    call update_keyboard_buffers
 	pop bc

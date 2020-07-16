@@ -161,12 +161,12 @@ state_level_complete_move_credit_loop:
 	ld a,(hl)
 	or a
 	jr z,state_level_complete_move_credit_loop_done
-	inc a	; prevent overflow of credits!
-	jr z,state_level_complete_move_credit_loop_done
 	dec (hl)
 	ld hl,global_state_credits
-	inc (hl)
-
+	ld a,(hl)	; prevent overflow of credits!
+	inc a
+	jr z,state_level_complete_move_credit_loop_done
+	ld (hl),a
 	ld hl,SFX_ui_move
 	call play_SFX_with_high_priority
 

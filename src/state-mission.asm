@@ -487,6 +487,10 @@ state_mission_move_cursor_button1_no_nebula:
 	cp 9	; x position of boss 3
 	jr z,state_mission_move_cursor_button1_check_if_boss
 
+	ld a,(ui_cursor_position)
+	cp 12	; x position of boss 4
+	jr z,state_mission_move_cursor_button1_boss
+
 	jr state_mission_move_cursor_button1_no_boss
 
 state_mission_move_cursor_button1_check_if_boss:
@@ -989,7 +993,7 @@ draw_minimap_not_bg:
 
 	; draw collected maps:
 	ld a,(global_state_bosses_defeated)
-	or a
+	and #03	; at most 3 maps
 	ret z
 	ld de,CHRTBL2+(11*32+28)*8
 	ld b,a

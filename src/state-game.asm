@@ -41,6 +41,10 @@ state_game_start_difficulty_loop_end:
 	    ld a,3
 	    ld (level_end_countdown),a
 
+; 	    ; debug:
+; 	    ld a,0
+; 	    ld (difficulty_level_length),a
+
 	    ld bc,64*32
 	    ld hl,sprites_ingame_plt
 	    call load_sprites_sprtbl2

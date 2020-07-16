@@ -11,7 +11,7 @@ wave_types:
     db #ff
     ; wave type 2: 4 trilobites in a sequence from the bottom
     db ENEMY_TRILO, MOVEMENT_TRILO_H, 3
-    db 34,112, 34,112, 34,112, 34,112, #ff,#ff, #ff,#ff
+    db 34,104, 34,104, 34,104, 34,104, #ff,#ff, #ff,#ff
     db #ff
     ; wave type 3: 4 trilobites at once vertically
     db ENEMY_TRILO, MOVEMENT_TRILO_H, 0
