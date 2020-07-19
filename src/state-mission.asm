@@ -343,13 +343,13 @@ setup_ui_gfx:
 state_mission_move_cursor:
 	ld a,(keyboard_line_clicks)
 	bit KEY_UP_BIT,a
-	jp nz,state_mission_move_cursor_up
+	jr nz,state_mission_move_cursor_up
 	bit KEY_DOWN_BIT,a
-	jp nz,state_mission_move_cursor_down
+	jr nz,state_mission_move_cursor_down
 	bit KEY_RIGHT_BIT,a
-	jp nz,state_mission_move_cursor_right
+	jr nz,state_mission_move_cursor_right
 	bit KEY_LEFT_BIT,a
-	jp nz,state_mission_move_cursor_left
+	jr nz,state_mission_move_cursor_left
 	bit KEY_BUTTON1_BIT,a
 	jr nz,state_mission_move_cursor_button1
 	ret
@@ -360,6 +360,12 @@ state_mission_move_cursor_up:
 	or a
 	ret z
 	dec (hl)
+	ld hl,ui_cursor_position
+	ld a,(hl)
+	cp 13
+	jr nz,state_mission_move_cursor_up_not_quit
+	ld (hl),9
+state_mission_move_cursor_up_not_quit:
 	ld hl,SFX_ui_move
 	jp play_SFX_with_high_priority	
 
@@ -386,9 +392,9 @@ state_mission_move_cursor_sfx:
 
 state_mission_move_cursor_left_buttons:
 	ld a,(hl)
-	cp 7
+	cp 13
 	ret c
-	ld (hl),4
+	ld (hl),6
 	jr state_mission_move_cursor_sfx
 
 state_mission_move_cursor_right:
@@ -404,9 +410,9 @@ state_mission_move_cursor_right:
 
 state_mission_move_cursor_right_buttons:	
 	ld a,(hl)
-	cp 7
+	cp 13
 	ret nc
-	ld (hl),9
+	ld (hl),13
 	jr state_mission_move_cursor_sfx
 
 state_mission_move_cursor_button1:
@@ -434,13 +440,11 @@ state_mission_move_cursor_button1_wrong:
 
 state_mission_move_cursor_button1_buttons:
 	ld a,(ui_cursor_position)
-	cp 7
-	jp c,state_mission_move_cursor_button1_selected_upgrade
-
-	jp state_gameover_screen
+	cp 13
+	jp z,state_gameover_screen
+	jr state_mission_move_cursor_button1_selected_upgrade
 
 state_mission_move_cursor_button1_no_nebula:
-
 	; store which map we are playing:
 	ld hl,ui_cursor_area
 	ld de,global_state_selected_level
@@ -558,7 +562,7 @@ state_mission_draw_cursor_no_playable_planet:
 
 state_mission_draw_cursor_buttons:
 	ld a,(ui_cursor_position)
-	cp 7
+	cp 13
 	jr nc,state_mission_draw_cursor_buttons_quit
 	ld de,62*256+106
 	jr state_mission_draw_cursor_buttons_continue

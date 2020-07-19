@@ -66,7 +66,15 @@ state_title_screen:
 	ld de,CHRTBL2+(512+5*32+8)*8
 	ld iyl,COLOR_WHITE*16
 	call draw_text_from_bank_16
-	
+
+	; draw version:
+	ld c,TEXT_VERSION_BANK
+	ld a,TEXT_VERSION_IDX
+	ld de,CHRTBL2+(512+7*32)*8
+	ld iyl,COLOR_WHITE*16
+	ld b,4*8
+	call draw_text_from_bank
+
 
 	ld bc,300	; after some time, jump to story
 state_title_screen_loop:

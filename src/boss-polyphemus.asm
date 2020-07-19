@@ -243,7 +243,7 @@ update_polyphemus_state5_4_no_overflow:
 		call update_boss_fire_bullet
 	pop af
 	ld (player_y),a
-	jp update_polyphemus_draw
+	jr update_polyphemus_draw
 
 update_polyphemus_state4_continue:
 update_polyphemus_state5_continue:

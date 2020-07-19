@@ -50,7 +50,7 @@ update_scylla_not_hit:
 	dec a
 	jp z,update_scylla_state5
 	dec a
-	jp z,update_scylla_state6
+	jr z,update_scylla_state6
 	dec a
 	jp z,update_scylla_state7
 	dec a
@@ -109,7 +109,7 @@ update_scylla_state3:
 	; movement:
 	ld a,(boss_state_cycle)
 	and #07
-	jp nz,update_scylla_state2_6_draw
+	jr nz,update_scylla_state2_6_draw
 
 update_scylla_state3_move:
 	ld c,0
@@ -143,7 +143,7 @@ update_scylla_state3_no_y_move:
 
 	ld a,c
 	or a
-	jp nz,update_scylla_state2_6_draw
+	jr nz,update_scylla_state2_6_draw
 
 	; arrived at destination!
 	ld hl,boss_state
@@ -163,7 +163,7 @@ update_scylla_state4:
 
 	; fire laser:
 	call find_enemy_bullet_spot
-	jp nz,update_scylla_state4_no_laser
+	jr nz,update_scylla_state4_no_laser
 
 	ld a,(boss_x)
 	add a,a

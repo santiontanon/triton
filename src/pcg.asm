@@ -105,14 +105,14 @@ PCG_choosePattern_potential_match:
 	ld a,(hl)	; get the next constraint
 	dec hl
 	dec a	; if it's an empty constraint, choose it and end the level!
-	jp z,PCG_choosePattern_match
+	jr z,PCG_choosePattern_match
 	add hl,bc
 	jr PCG_choosePattern_loop
 
 PCG_choosePattern_potential_match_no_level_end:
 	call random
 	and #80
-	jp z,PCG_choosePattern_match
+	jr z,PCG_choosePattern_match
 	add hl,bc
 	jr PCG_choosePattern_loop
 
@@ -153,7 +153,7 @@ find_tile_enemy_spot:
 find_tile_enemy_spot_loop:
 		ld a,(ix)
 		or a
-		jp z, find_tile_enemy_spot_found
+		jr z, find_tile_enemy_spot_found
 		add ix,de
 		djnz find_tile_enemy_spot_loop
 		or 1	; spot not found
@@ -183,11 +183,11 @@ find_tile_enemy_spot_found:
 		ld hl,mapBuffer
 		ld bc,MAP_BUFFER_WIDTH
 		or a
-		jp z,find_tile_enemy_spot_ptr_loop_done
+		jr z,find_tile_enemy_spot_ptr_loop_done
 find_tile_enemy_spot_ptr_loop:
 		add hl,bc
 		dec a
-		jp nz,find_tile_enemy_spot_ptr_loop
+		jr nz,find_tile_enemy_spot_ptr_loop
 find_tile_enemy_spot_ptr_loop_done:
 		ld b,0
 		ld c,(ix+TILE_ENEMY_STRUCT_X)
@@ -243,7 +243,7 @@ PCG_spawnTileBasedEnemies_moai_loop_y:
 PCG_spawnTileBasedEnemies_moai_loop_x:
 	ld a,(hl)
 	inc a ; cp #ff
-	jp z,PCG_spawnTileBasedEnemies_turret
+	jr z,PCG_spawnTileBasedEnemies_turret
 	inc a ; cp #fe
 	jp z,PCG_spawnTileBasedEnemies_moai
 	inc a ; cp #fd
@@ -252,7 +252,7 @@ PCG_spawnTileBasedEnemies_moai_enemy_spawned:
 	inc hl
 	djnz PCG_spawnTileBasedEnemies_moai_loop_x
 	dec c
-	jp nz,PCG_spawnTileBasedEnemies_moai_loop_y
+	jr nz,PCG_spawnTileBasedEnemies_moai_loop_y
 PCG_spawnTileBasedEnemies_2rows_moai_done:
 PCG_spawnTileBasedEnemies_2rows_tech_done:
 PCG_spawnTileBasedEnemies_2rows_water_done:	
@@ -271,7 +271,7 @@ PCG_spawnTileBasedEnemies_tech_loop_y:
 PCG_spawnTileBasedEnemies_tech_loop_x:
 	ld a,(hl)
  	inc a ; cp #ff
- 	jp z,PCG_spawnTileBasedEnemies_turret
+ 	jr z,PCG_spawnTileBasedEnemies_turret
  	inc a ; cp #fe
  	jp z,PCG_spawnTileBasedEnemies_generator
 ; 	inc a ; cp #fd
@@ -280,7 +280,7 @@ PCG_spawnTileBasedEnemies_tech_enemy_spawned:
 	inc hl
 	djnz PCG_spawnTileBasedEnemies_tech_loop_x
 	dec c
-	jp nz,PCG_spawnTileBasedEnemies_tech_loop_y
+	jr nz,PCG_spawnTileBasedEnemies_tech_loop_y
 	jr PCG_spawnTileBasedEnemies_2rows_tech_done
 
 
@@ -292,7 +292,7 @@ PCG_spawnTileBasedEnemies_water_loop_y:
 PCG_spawnTileBasedEnemies_water_loop_x:
 	ld a,(hl)
  	inc a ; cp #ff
- 	jp z,PCG_spawnTileBasedEnemies_turret
+ 	jr z,PCG_spawnTileBasedEnemies_turret
 	inc a ; cp #fe
  	jp z,PCG_spawnTileBasedEnemies_water_dome
  	inc a ; cp #fd
@@ -301,7 +301,7 @@ PCG_spawnTileBasedEnemies_water_enemy_spawned:
 	inc hl
 	djnz PCG_spawnTileBasedEnemies_water_loop_x
 	dec c
-	jp nz,PCG_spawnTileBasedEnemies_water_loop_y
+	jr nz,PCG_spawnTileBasedEnemies_water_loop_y
 	jr PCG_spawnTileBasedEnemies_2rows_water_done
 
 
@@ -313,7 +313,7 @@ PCG_spawnTileBasedEnemies_temple_loop_y:
 PCG_spawnTileBasedEnemies_temple_loop_x:
 	ld a,(hl)
  	inc a ; cp #ff
- 	jp z,PCG_spawnTileBasedEnemies_turret
+ 	jr z,PCG_spawnTileBasedEnemies_turret
 	inc a ; cp #fe
  	jp z,PCG_spawnTileBasedEnemies_temple_snake
  	inc a ; cp #fd
@@ -322,7 +322,7 @@ PCG_spawnTileBasedEnemies_temple_enemy_spawned:
 	inc hl
 	djnz PCG_spawnTileBasedEnemies_temple_loop_x
 	dec c
-	jp nz,PCG_spawnTileBasedEnemies_temple_loop_y
+	jr nz,PCG_spawnTileBasedEnemies_temple_loop_y
 	jr PCG_spawnTileBasedEnemies_2rows_temple_done
 
 ;-----------------------------------------------
@@ -532,7 +532,7 @@ PCG_spawnTileBasedEnemies_generator_bottom:
 		ld bc,GENERATOR_START_OFFSET
 		add hl,bc
 		ld a,2	; enemy height
-		ld bc,4	; enemy width+1
+		ld c,4	; enemy width+1
 		call PCG_copy_enemy_tiles
 	pop bc
 	pop hl
@@ -547,7 +547,7 @@ PCG_spawnTileBasedEnemies_generator_top:
 		ld bc,GENERATOR_START_OFFSET
 		add hl,bc
 		ld a,2	; enemy height
-		ld bc,4	; enemy width+1
+		ld c,4	; enemy width+1
 		call PCG_copy_enemy_tiles
 	pop bc
 	pop hl
@@ -606,7 +606,7 @@ PCG_spawnTileBasedEnemies_temple_snake:
 	call clearEnemyMarker
 	JP_IF_RANDOM_GEQ difficulty_spawn_p, PCG_spawnTileBasedEnemies_temple_snake_no_spawn 
 	call find_tile_enemy_spot	; finds a spot in the tile_enemies list to place the enemy (returned in IX)
-	jp nz,PCG_spawnTileBasedEnemies_temple_snake_no_spawn
+	jr nz,PCG_spawnTileBasedEnemies_temple_snake_no_spawn
 
 	ld a,(difficulty_enemy_health_tough)
 	ld (ix+TILE_ENEMY_STRUCT_HP),a
@@ -751,4 +751,4 @@ PCG_choose_enemy_wave_loop:
 	dec a
 	jp z,spawn_enemy_wave
 	add hl,bc
-	jp PCG_choose_enemy_wave_loop
+	jr PCG_choose_enemy_wave_loop

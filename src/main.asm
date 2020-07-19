@@ -751,7 +751,7 @@ text_skip:                  ds virtual 1
 global_state_minimap:       ds virtual MINIMAP_WIDTH*(MINIMAP_HEIGHT+1) ; we make it one row bigger
                                                         ; so that we don't need to check if we are in the bottom row (saves code)
 global_state_credits:       ds virtual 1
-global_state_weapon_configuration:  ds virtual 8    ; which weapons are selected
+global_state_weapon_configuration:  ds virtual 8    ; which weapons are equipped
 global_state_weapon_upgrade_level:  ds virtual N_WEAPONS
 global_state_levels_completed:      ds virtual 1
 global_state_bosses_defeated:        ds virtual 1

@@ -177,7 +177,7 @@ state_weapons_move_cursor_button2:
 	ld a,(ui_cursor_position)
 	or a
 	jr nz,state_weapons_move_cursor_button2_not_in_back
-	jp state_weapons_screen_loop_back
+	jr state_weapons_screen_loop_back
 
 state_weapons_move_cursor_button2_not_in_back:
 	ld a,3
@@ -195,7 +195,7 @@ state_weapons_move_cursor_button1:
 	dec a
 	jr z,state_weapons_move_cursor_button1_area2
 	dec a
-	jr z,state_weapons_move_cursor_button1_area3
+	jp z,state_weapons_move_cursor_button1_area3
 	ret
 
 state_weapons_move_cursor_button1_area0:
@@ -262,13 +262,32 @@ state_weapons_move_cursor_button1_area2:
 	ld c,a	; b is already 0
 	add hl,bc
 	ld a,ixl
+
+	; check if it's alredy equipped:
+	cp (hl)
+	jr z,state_weapons_move_cursor_button1_area2_unequip
 	ld (hl),a
 
+state_weapons_move_cursor_button1_area2_continue:
+	; update the left bar
 	call state_weapons_draw_equipped_weapons
+	; update te EQP button:
+	ld a,#f0
+	ld (ui_upgrade_scroll_position_last),a	; some position we cannot reach (to force full redraw)
+	call state_weapons_draw_upgrades
 
 	ld hl,SFX_ui_select
 	jp play_SFX_with_high_priority
 
+state_weapons_move_cursor_button1_area2_unequip:
+	cp WEAPON_SPEED
+	jr z,state_weapons_move_cursor_button1_area2_continue
+	cp WEAPON_BULLET
+	jr z,state_weapons_move_cursor_button1_area2_continue
+	cp WEAPON_TRANSFER
+	jr z,state_weapons_move_cursor_button1_area2_continue
+	ld (hl),WEAPON_NONE
+	jr state_weapons_move_cursor_button1_area2_continue
 
 state_weapons_move_cursor_button1_area3:
 	ld a,(ui_cursor_position)
@@ -310,6 +329,27 @@ state_weapons_move_cursor_button1_area3:
 	sub (hl)	; cost
 	ld (de),a
 
+	push af	
+		; auto equip:
+		ld a,(ui_cursor_position)
+		dec a
+		ld hl,ui_upgrade_scroll_position
+		add a,(hl)
+		ld ixl,a
+		ld c,a
+	  	ld hl,weapon_slot_number-1
+	  	add hl,bc
+	 	ld a,(hl)
+	 	cp #ff
+	 	jp z,state_weapons_move_cursor_button1_area3_not_equipable 	; not equipable
+	 	ld hl,global_state_weapon_configuration
+	 	ld c,a	; b is already 0
+	 	add hl,bc
+	 	ld a,ixl
+	 	ld (hl),a
+
+state_weapons_move_cursor_button1_area3_not_equipable:
+	pop af
 	; redraw:
 	ld de,CHRTBL2+(32*2+18)*8
 	ld iyl,#a0	; yellow
@@ -634,7 +674,7 @@ state_weapons_draw_upgrades_done_with_down_arrow:
 	inc b
 	inc b
 	cp b
-	jp z,state_weapons_draw_upgrades_scroll_up
+	jr z,state_weapons_draw_upgrades_scroll_up
 
 	ld de,CHRTBL2+(14*32+13)*8
 	ld b,3
@@ -650,8 +690,7 @@ state_weapons_draw_upgrades_loop:
 	pop af
 	pop bc
 	inc a
-	dec b
-	jp nz,state_weapons_draw_upgrades_loop
+	djnz state_weapons_draw_upgrades_loop
 	; out (#2d),a	
 	ret
 
@@ -745,7 +784,7 @@ ui_copy_VDP_to_VDP:
 			add hl,bc
 			ex de,hl
 		pop hl
-		ld bc,CLRTBL2-CHRTBL2
+; 		ld bc,CLRTBL2-CHRTBL2
 		add hl,bc
 	pop bc
 	push de
@@ -798,27 +837,41 @@ state_weapons_draw_one_upgrade:
 	; draw buttons:
 	; EQP:
 	; - if we don't have the weapon, we cannot equip it
-	ld a,ixh
-		ld hl,weapon_slot_number-1
+	ld a,ixh	; ixh = weapon idx
+	ld hl,weapon_slot_number-1
 	ld b,0
 	ld c,a
 	add hl,bc
 	ld a,(hl)
 	inc a
-	jr z,state_weapons_draw_one_upgrade_no_equip	; not equipable
+	jr z,state_weapons_draw_one_upgrade_not_equipable	; not equipable
 
-	ld hl,global_state_weapon_upgrade_level
+	push hl
+		ld hl,global_state_weapon_upgrade_level
+		add hl,bc
+		ld a,(hl)
+		or a
+	pop hl
+	jr z,state_weapons_draw_one_upgrade_red_equip	; we don't have it
+
+	; if we have it equipped, show it green color:
+	ld c,(hl)	; we recover the slot again
+	ld hl,global_state_weapon_configuration
 	add hl,bc
 	ld a,(hl)
-	or a
-	jr z,state_weapons_draw_one_upgrade_no_equip	; we don't have it
+	cp ixh
+	jr z,state_weapons_draw_one_upgrade_already_equipped
 
 	ld a,COLOR_DARK_BLUE + COLOR_WHITE*16
-	;ld iyl,COLOR_DARK_BLUE + COLOR_WHITE*16
 	jr state_weapons_draw_one_upgrade_equip_color_set
-state_weapons_draw_one_upgrade_no_equip:
+state_weapons_draw_one_upgrade_already_equipped:
+	ld a,COLOR_DARK_GREEN + COLOR_WHITE*16
+	jr state_weapons_draw_one_upgrade_equip_color_set
+state_weapons_draw_one_upgrade_not_equipable:
+	ld a,COLOR_BLACK + COLOR_BLACK*16
+	jr state_weapons_draw_one_upgrade_equip_color_set
+state_weapons_draw_one_upgrade_red_equip:
 	ld a,COLOR_DARK_RED + COLOR_WHITE*16
-	;ld iyl,COLOR_DARK_RED + COLOR_WHITE*16
 state_weapons_draw_one_upgrade_equip_color_set:
 	push de
 		ex de,hl	; we restore the ptr to draw in hl
@@ -996,7 +1049,9 @@ state_weapons_draw_equipped_weapons_loop:
 			ld a,ixl
 			; weapon level:
 			cp #ff
-			call nz,draw_weapon_level
+			jr z,state_weapons_draw_equipped_weapons_clear_weapon_level
+			call draw_weapon_level
+state_weapons_draw_equipped_weapons_clear_weapon_level_continue:
 		pop hl
 		ld bc,32*3*8
 		add hl,bc
@@ -1006,6 +1061,15 @@ state_weapons_draw_equipped_weapons_loop:
 	pop bc
 	djnz state_weapons_draw_equipped_weapons_loop
 	ret
+state_weapons_draw_equipped_weapons_clear_weapon_level:
+	push de
+		call clear_text_rendering_buffer
+	pop de
+	ld bc,3*8
+	push de
+		call render_text_draw_buffer
+	pop de
+	jr state_weapons_draw_equipped_weapons_clear_weapon_level_continue
 
 
 ;-----------------------------------------------
@@ -1162,12 +1226,12 @@ ui_draw_frame_x_loop_last_row:
 				; if b == 1 && a == 1: draw tile 4
 				; if b == 1 && a == anything else: draw tile 1
 				cp c
-				jp nz,ui_draw_frame_x_loop_last_row_notc
+				jr nz,ui_draw_frame_x_loop_last_row_notc
 				call ui_draw_frame_draw_tile3
 				jr ui_draw_frame_x_loop_continue
 ui_draw_frame_x_loop_last_row_notc:
 				cp 1
-				jp nz,ui_draw_frame_x_loop_last_row_not1
+				jr nz,ui_draw_frame_x_loop_last_row_not1
 				call ui_draw_frame_draw_tile4
 				jr ui_draw_frame_x_loop_continue
 ui_draw_frame_x_loop_last_row_not1:
@@ -1181,12 +1245,12 @@ ui_draw_frame_x_loop_first_row:
 				; if b == ? && a == 1: draw tile 2
 				; if b == ? && a == anything else: draw tile 1
 				cp c
-				jp nz,ui_draw_frame_x_loop_first_row_notc
+				jr nz,ui_draw_frame_x_loop_first_row_notc
 				call ui_draw_frame_draw_tile0
 				jr ui_draw_frame_x_loop_continue
 ui_draw_frame_x_loop_first_row_notc:
 				cp 1
-				jp nz,ui_draw_frame_x_loop_first_row_not1
+				jr nz,ui_draw_frame_x_loop_first_row_not1
 				call ui_draw_frame_draw_tile2
 				jr ui_draw_frame_x_loop_continue
 ui_draw_frame_x_loop_first_row_not1:
@@ -1201,7 +1265,7 @@ ui_draw_frame_x_loop_continue:
 				pop bc
 			pop af
 			dec a
-			jp nz,ui_draw_frame_x_loop
+			jr nz,ui_draw_frame_x_loop
 
 		pop hl
 		push bc
@@ -1257,7 +1321,7 @@ draw_weapon_gfx_narrow:
 		add hl,bc
 		ex de,hl
 	pop hl
-	ld bc,4
+	ld c,4
 	add hl,bc
 
 	; weapon name:
@@ -1265,11 +1329,16 @@ draw_weapon_gfx_narrow:
 	inc hl
 	ld a,(hl)
 	cp #ff	; if there is no text
-	ret z
+	jr z,draw_weapon_gfx_narrow_clear_text
 	ld iyl,COLOR_WHITE*16
 	ld b,6*8
 	jp draw_text_from_bank_reusing
-
+draw_weapon_gfx_narrow_clear_text:
+    push de
+		call clear_text_rendering_buffer
+	pop de
+	ld bc,6*8
+	jp render_text_draw_buffer
 
 ; a: level
 draw_weapon_gfx:
@@ -1283,8 +1352,7 @@ draw_weapon_gfx:
 	pop hl
 	inc hl
 	inc hl
-	jp draw_weapon_gfx_row
-
+; 	jp draw_weapon_gfx_row
 
 draw_weapon_gfx_row:
 	ld a,(hl)

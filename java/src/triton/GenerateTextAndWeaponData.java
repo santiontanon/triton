@@ -247,6 +247,8 @@ public class GenerateTextAndWeaponData {
         lines_with_constant.put("MSXDEV 2020 COMPO", "E_CUTSCENE_11");
         lines_with_constant.put("KEEP THE MSX ALIVE!", "E_CUTSCENE_12");
 
+        lines_with_constant.put("V1.1", "VERSION");
+        
         for(String s:lines_with_constant.keySet()) {
             if (!lines.contains(s)) lines.add(s);
         }

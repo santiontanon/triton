@@ -58,10 +58,10 @@ state_gameover_screen_loop:
 	    call update_keyboard_buffers
 	pop bc
 	inc c
-	jp z,state_gameover_screen_loop_done
+	jr z,state_gameover_screen_loop_done
     ld a,(keyboard_line_clicks)
     bit 0,a
-    jp z,state_gameover_screen_loop
+    jr z,state_gameover_screen_loop
 
 state_gameover_screen_loop_done:
 	call clearScreenLeftToRight

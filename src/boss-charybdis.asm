@@ -706,7 +706,7 @@ update_charybdis_draw_up_turn_from_left_frame_set:
 	ld c,(ix+1)
 	inc ix
 	inc ix
-	jp update_charybdis_draw_left
+	jr update_charybdis_draw_left
 
 	; c: has length
 	; de: has draw ptr
@@ -768,7 +768,7 @@ update_charybdis_draw_left_tail_draw:
 	ld bc,3
 	call copy_enemy_tiles
 	;call copy_non_empty_enemy_tiles
-	jp update_charybdis_draw_face
+	jr update_charybdis_draw_face
 
 update_charybdis_draw_left_turn_from_down:
 	push bc

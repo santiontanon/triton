@@ -158,7 +158,7 @@ ending_scroll_draw_image1_loop:
 			add hl,bc
 			ex de,hl
 		pop hl
-		ld bc,12
+		ld c,12
 		add hl,bc
 	pop bc
 	djnz ending_scroll_draw_image1_loop
@@ -214,7 +214,7 @@ ending_draw_next_text_line_text:
 	ld a,e
     and #07
     ld hl,buffer
-    ld b,0
+    ld b,l	; buffer ix 256 aligned, so l == 0
     ld c,a
     add hl,bc
     ld bc,16*8
@@ -270,7 +270,7 @@ ending_draw_next_text_line_loop:
 			add hl,bc
 			ex de,hl
 		pop hl
-		ld bc,8*8
+		ld c,8*8
 		add hl,bc
 	pop bc
 	djnz ending_draw_next_text_line_loop
@@ -298,7 +298,7 @@ load_groupped_tile_data_into_vdp_bank0_loop:
 		add hl,bc
 		push hl
 			push de
-				ld bc,8
+; 				ld bc,8
 				call fast_LDIRVM
 			pop hl
 			ld bc,CHRTBL2+8-CLRTBL2

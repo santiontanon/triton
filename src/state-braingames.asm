@@ -40,7 +40,7 @@ state_btaingames_screen_logo_loop:
 	; fade in:
 	ld hl,CLRTBL2+9*256
 	ld bc,6*256
-	ld a,#00
+	xor a
 	call fast_FILVRM
 
 	; draw the logo all in white:
