@@ -268,7 +268,7 @@ Execute:
     call StopMusic
     call setup_custom_interrupt
 
-    jp COMPRESSED_state_braingames_screen
+    ; jp COMPRESSED_state_braingames_screen
 
 
 ;-----------------------------------------------
@@ -927,6 +927,7 @@ player_secondary_bullets:   ds virtual MAX_PLAYER_SECONDARY_BULLETS*PLAYER_SECON
 
 enemies:                    ds virtual MAX_ENEMIES*ENEMY_STRUCT_SIZE
 
+last_wave_type_spawned:     ds virtual 1
 enemy_spawn_next_waves:     ds virtual 3    ; waves for the next 3 patterns
 enemy_spawn_queue:          ds virtual ENEMY_SPAWN_QUEUE_SIZE*ENEMY_SPAWN_STRUCT_SIZE
 enemy_spawn_queue_end:

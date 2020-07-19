@@ -166,6 +166,8 @@ state_weapons_move_cursor:
 	ld a,(keyboard_line_clicks+2)
 	bit KEY_BUTTON2_BIT,a
 	jr nz,state_weapons_move_cursor_button2
+	bit KEY_BUTTON2_BIT_ALTERNATIVE,a
+	jr nz,state_weapons_move_cursor_button2
 	ret
 
 state_weapons_move_cursor_button2:

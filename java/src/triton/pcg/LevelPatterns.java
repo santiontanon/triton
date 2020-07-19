@@ -64,7 +64,7 @@ public class LevelPatterns {
         patterns.add(new Pattern("data/patterns/tech2.tmx", Pattern.EMPTY, Pattern.EMPTY, new int[]{7,7,9,9}));
         patterns.add(new Pattern("data/patterns/tech3.tmx", Pattern.EMPTY, Pattern.EMPTY, new int[]{13,13,8,9}));
         patterns.add(new Pattern("data/patterns/tech4.tmx", Pattern.EMPTY, Pattern.TOP_BOTTOM, new int[]{8,10,14,15}));
-        patterns.add(new Pattern("data/patterns/tech5.tmx", Pattern.TOP_BOTTOM, Pattern.TOP_BOTTOM, new int[]{14,14,14,14}));
+        patterns.add(new Pattern("data/patterns/tech5.tmx", Pattern.TOP_BOTTOM, Pattern.TOP_BOTTOM, new int[]{14,14,15,15}));
         patterns.add(new Pattern("data/patterns/tech6.tmx", Pattern.TOP_BOTTOM, Pattern.EMPTY, new int[]{8,9,10,11}));
         patterns.add(new Pattern("data/patterns/tech7.tmx", Pattern.TOP_BOTTOM, Pattern.TOP_BOTTOM, new int[]{8,10,14,15}));
         patterns.add(new Pattern("data/patterns/tech8.tmx", Pattern.TOP_BOTTOM, Pattern.TOP_BOTTOM, new int[]{9,11,14,15}));        

@@ -163,6 +163,10 @@ update_player_default_state_no_move:
 
 		ld a,(keyboard_line_clicks+KEY_BUTTON2_BYTE)
 		bit KEY_BUTTON2_BIT,a
+		push af
+			call nz,select_weapon_sfx
+		pop af
+		bit KEY_BUTTON2_BIT_ALTERNATIVE,a
 		call nz,select_weapon_sfx
 
 		ld a,(player_primary_weapon)

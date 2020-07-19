@@ -88,9 +88,9 @@ PCG_choosePattern_using_constraint_level_still_going:
 PCG_choosePattern_loop:
 	ld a,(hl)
 	or a
-	jp z,PCG_choosePattern_restart
+	jr z,PCG_choosePattern_restart
 	cp e
-	jp z,PCG_choosePattern_potential_match
+	jr z,PCG_choosePattern_potential_match
 	add hl,bc
 	jr PCG_choosePattern_loop
 PCG_choosePattern_restart:
@@ -366,7 +366,8 @@ PCG_spawnTileBasedEnemies_turret_bottom:
 			ld (ix+TILE_ENEMY_STRUCT_PTRH),h
 		pop hl
 
-		ld bc,-(1*PCG_PATTERN_WIDTH+1)
+		ld bc,-(PCG_PATTERN_WIDTH+1)
+
 		add hl,bc	; start position
 		ex de,hl
 		ld hl,(level_type_tile_enemies_bank1)
@@ -438,7 +439,8 @@ PCG_spawnTileBasedEnemies_moai_bottom:
 			ld (ix+TILE_ENEMY_STRUCT_PTRH),h
 		pop hl
 
-		ld bc,-(3*PCG_PATTERN_WIDTH+1)
+ 		ld bc,-(3*PCG_PATTERN_WIDTH+1)
+
 		add hl,bc	; start position
 		ex de,hl
 		ld hl,tile_enemies_moai1+MOAI_START_OFFSET
@@ -712,14 +714,26 @@ PCG_choose_enemy_wave:
 	or a
 	jr z,PCG_choose_enemy_wave_level_wave_chosen	; stop spawning enemies
 
+	ld a,(last_wave_type_spawned)
+	ld e,a	; we store this for later
 	call random
+	ld b,0
+PCG_choose_enemy_wave_norepeat_loop:
+	; pick one different from the last one spawned:
 	ld hl,pcg_map_pattern_buffer+PCG_PATTERN_WIDTH*MAP_HEIGHT
 	and #03	; assumes that PCG_WAVE_TYPES_PER_PATTERN = 4
-	ADD_HL_A
+	ld c,a
+	add hl,bc
 	ld a,(hl)	; a has the wave type
+	cp e
+	jr nz,PCG_choose_enemy_wave_level_wave_chosen
+	ld a,c
+	inc a
+	jr PCG_choose_enemy_wave_norepeat_loop
 
 PCG_choose_enemy_wave_level_wave_chosen:
 	; store the wave at the end of the queue, and get the front:
+	ld (last_wave_type_spawned),a
 	ld (enemy_spawn_next_waves+2),a
 	ld a,(enemy_spawn_next_waves)
 

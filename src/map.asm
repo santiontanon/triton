@@ -15,14 +15,15 @@ draw_map:
     srl a   ; scroll is 2 by 2 pixels
     add a,d
     ld d,a
-    ld b,0  ; we set this for later
+    ld b,e  ; we set this for later (e == 0 as tileTypeBuffers is 256 aligned)
 
     ld hl,mapBuffer
     ld a,(scroll_x_tile)
     ADD_HL_A
     
-    ld iyh,MAP_HEIGHT
-    ld iyl,MAP_BUFFER_WIDTH-31    ; since we skip the last inc hl
+;     ld iyh,MAP_HEIGHT
+;     ld iyl,MAP_BUFFER_WIDTH-31    ; since we skip the last inc hl
+    ld iy,((MAP_BUFFER_WIDTH - 31) & #ff) + (MAP_HEIGHT << 8)
 
 draw_map_column_loop:
     ; this loop is unrolled to make it faster:
