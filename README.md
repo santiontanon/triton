@@ -72,8 +72,8 @@ List of upgrades:
 - *Initial speed*: increases the initial speed of the ship (one speed-up per upgrade).
 - *Transfer*: if you select this option in-game, it generates 1 credit (that can be used to buy upgrades later). You can by an upgrade to generate 2 credits per transfer. Cannot be unequipped.
 - *Bullet*: the default weapon. You cannot unequip it. The base power has a very low fire cadence. The first upgrade significantly ups the cadence, and the second upgrade doubles the damage of bullets. The "special" of all bullet weapons is a "machine gun" that fires at a very high cadence.
-- *Twin bullet*: fires forward and backwards. Upgrades increase cadence and then power.
-- *Triple bullet*: multiple forward shots. The first upgrade gives you 2 bullets, second upgrade, 3, and third upgrade increases damage.
+- *Twin bullet*: fires forward and backwards. Second upgrade increase cadence.
+- *Triple bullet*: multiple forward shots. The first upgrade gives you 2 bullets, second upgrade gives you 3, and third upgrade increases damage.
 - *Shield*: protects you against 3 units of damage. Buy a second upgrade to protect 5 units of damage.
 - *Light torpedoes*: forward shooting torpedoes with higher cadence, but low damage. Upgrades increase cadence and damage.
 - *Heavy torpedoes*: forward shooting torpedoes with lower cadence, but higher damage. Upgrades increase cadence and damage.
