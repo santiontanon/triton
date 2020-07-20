@@ -10,7 +10,7 @@ spawn_power_pellet_loop:
 	push af
 		ld a,(hl)
 		or a
-		jp nz,spawn_power_pellet_next
+		jr nz,spawn_power_pellet_next
 	pop af
 	; spot found:
 	push hl	; save this pointer, in case the spawn is not allowed
@@ -106,6 +106,7 @@ power_pellets_restore_bg_loop:
 power_pellets_restore_bg_loop_no_deletion:
 		inc hl	; skip type
 		ld a,(scroll_x_tile)
+		dec a
 		dec a
 		cp (hl)	; x
 		jp p,power_pellets_restore_bg_loop_skip

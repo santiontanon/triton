@@ -657,11 +657,12 @@ level_up_bullet_damage_set:
 	ld (player_primary_weapon_damage),a	
 
  	ld hl,weapon_bullet_cadence-1	; -1 since we want level 1 to index the first position
+level_up_twin_bullet_entry_point:
+level_up_triple_bullet_entry_point:
  	ld b,0
  	add hl,bc
  	ld a,(hl)
  	ld (player_primary_weapon_cooldown),a
-
 	ret
 
 
@@ -674,14 +675,18 @@ level_up_twin_bullet:
 	ld (hl),a
 	ld a,c
 	ld (player_primary_weapon_level),a
-	ld hl,weapon_twin_bullet_cadence-1	; -1 since we want level 1 to index the first position
- 	ld b,0
- 	add hl,bc
-	ld a,(hl)
-	ld (player_primary_weapon_cooldown),a
+
+;  	cp 3
+;  	jr z,level_up_twin_bullet_max_level
 	ld a,BULLET_DAMAGE
+; 	jr level_up_twin_bullet_damage_set
+; level_up_twin_bullet_max_level:
+; 	ld a,BULLET_DAMAGE_MAX
+; level_up_twin_bullet_damage_set: 	
 	ld (player_primary_weapon_damage),a	
-	ret
+
+	ld hl,weapon_twin_bullet_cadence-1	; -1 since we want level 1 to index the first position
+	jr level_up_twin_bullet_entry_point
 
 
 level_up_triple_bullet:
@@ -693,14 +698,18 @@ level_up_triple_bullet:
 	ld (hl),a
 	ld a,c
 	ld (player_primary_weapon_level),a
-	ld hl,weapon_triple_bullet_cadence-1	; -1 since we want level 1 to index the first position
- 	ld b,0
- 	add hl,bc
-	ld a,(hl)
-	ld (player_primary_weapon_cooldown),a
+
+ 	cp 3
+ 	jr z,level_up_triple_bullet_max_level
 	ld a,BULLET_DAMAGE
+	jr level_up_triple_bullet_damage_set
+level_up_triple_bullet_max_level:
+	ld a,BULLET_DAMAGE_MAX
+level_up_triple_bullet_damage_set: 	
 	ld (player_primary_weapon_damage),a	
-	ret
+
+	ld hl,weapon_triple_bullet_cadence-1	; -1 since we want level 1 to index the first position
+	jr level_up_triple_bullet_entry_point
 
 
 level_up_shield:
