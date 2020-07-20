@@ -107,7 +107,7 @@ Hints:
 
 
 ## Acknowledgments
-- Thanks a lot to people who gave me feedback on earlier versions of the game, which I could use to fix bugs and improve the overall game play: NatyPC, Alejandro Gil Cal, Jose Luis Lerma, Pablibiris, Jandro, Andrés de Pedro, Dani de Boixos Clubs, and Uninteresting.
+- Thanks a lot to people who gave me feedback on earlier versions of the game, which I could use to fix bugs and improve the overall game play: NatyPC, Alejandro Gil Cal, Jose Luis Lerma, Pablibiris, Jandro, Andrés de Pedro, Dani de Boixos Clubs, Uninteresting, ad I am sure I am forgetting people (if you gave me detailed feedback and your name is not here, just yell at me, and I'll ad you hehe ;) ).
 
 
 
