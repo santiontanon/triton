@@ -477,14 +477,14 @@ difficulty_d6_values_ROM:
 difficulty_triton_values_ROM:
     db 176  ; difficulty_spawn_p:               higher is harder
     db 3    ; difficulty_bullet_speed:          higher is harder
-    db 64   ; difficulty_fire_rate_fast:         higher is harder
-    db 20   ; difficulty_sprite_fire_rate_slow: higher is harder
-    db 12   ; difficulty_sprite_fire_rate_none: higher is harder (for enemies that should only fire in hard difficulty)
+    db 48   ; difficulty_fire_rate_fast:         higher is harder
+    db 16   ; difficulty_sprite_fire_rate_slow: higher is harder
+    db 10   ; difficulty_sprite_fire_rate_none: higher is harder (for enemies that should only fire in hard difficulty)
     db 0    ; difficulty_fire_delay:            lower is harder
     db 2    ; difficulty_enemy_speed:           higher is harder
     db 2    ; difficulty_enemy_health_base:     higher is harder
     db 6    ; difficulty_enemy_health_med:      higher is harder
-    db 12   ; difficulty_enemy_health_tough:    higher is harder
+    db 10   ; difficulty_enemy_health_tough:    higher is harder
     db 160  ; difficulty_power_spawn_p:         higher is harder
     db 208  ; difficulty_power_spawn_low_p:     higher is harder
     db 40   ; difficulty_level_length:

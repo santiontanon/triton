@@ -970,7 +970,7 @@ check_tile_enemy_deletion_no_duplicates:
 	ld a,(iy+TILE_ENEMY_STRUCT_TYPE)
 	and #7f
 	cp TILE_ENEMY_R_TURRET_TOP
-	jp z,check_tile_enemy_deletion_power_pellet
+	jp z,check_tile_enemy_deletion_power_pellet_top_turret
 	cp TILE_ENEMY_R_TURRET_BOTTOM
 	jp z,check_tile_enemy_deletion_power_pellet
 check_tile_enemy_deletion_after_power_pellet:
@@ -985,10 +985,17 @@ check_tile_enemy_deletion_tile_explosion:
 check_tile_enemy_deletion_sprite_explosion:
 	jp spawn_sprite_explosion
 
+check_tile_enemy_deletion_power_pellet_top_turret:
+	push bc
+		ld b,(iy+TILE_ENEMY_STRUCT_Y)
+		inc b
+		jr check_tile_enemy_deletion_power_pellet_entry_point
+
 check_tile_enemy_deletion_power_pellet:
 	push bc
-		ld c,(iy+TILE_ENEMY_STRUCT_X)
 		ld b,(iy+TILE_ENEMY_STRUCT_Y)
+check_tile_enemy_deletion_power_pellet_entry_point:
+		ld c,(iy+TILE_ENEMY_STRUCT_X)
 		dec c
 		call spawn_power_pellet
 	pop bc

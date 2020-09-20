@@ -573,14 +573,12 @@ PCG_spawnTileBasedEnemies_water_dome:
 		; adjust Y coordinate:
 		dec (ix+TILE_ENEMY_STRUCT_Y)
 		dec (ix+TILE_ENEMY_STRUCT_Y)
-		push hl
-			ld l,(ix+TILE_ENEMY_STRUCT_PTRL)
-			ld h,(ix+TILE_ENEMY_STRUCT_PTRH)
-			ld bc,-MAP_BUFFER_WIDTH*2
-			add hl,bc
-			ld (ix+TILE_ENEMY_STRUCT_PTRL),l
-			ld (ix+TILE_ENEMY_STRUCT_PTRH),h
-		pop hl
+		ld l,(ix+TILE_ENEMY_STRUCT_PTRL)
+		ld h,(ix+TILE_ENEMY_STRUCT_PTRH)
+		ld bc,-MAP_BUFFER_WIDTH*2
+		add hl,bc
+		ld (ix+TILE_ENEMY_STRUCT_PTRL),l
+		ld (ix+TILE_ENEMY_STRUCT_PTRH),h
 	pop bc
 	pop hl
 	jp PCG_spawnTileBasedEnemies_enemy_spawned

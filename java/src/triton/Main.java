@@ -18,7 +18,7 @@ public class Main {
         ExtractSprites.main(args);
         GenerateScoreboard.main(args);
         GenerateTMXGraphicData.main(args);
-        //GenerateTextAndWeaponData.main(args);  // slow (minutes with pletter, hours with aplib)
+        GenerateTextAndWeaponData.main(args);  // slow (minutes with pletter, hours with aplib)
         //GenerateTitleScreenData.main(args);    // slow (minutes with pletter, hours with aplib)
         GenerateUIData.main(args);
         GenerateWeaponData.main(args);

@@ -43,7 +43,7 @@ public class GenerateTextAndWeaponData {
                                  "TRANSFER",
                                  "   BULLET",
                                  "     TWIN",
-                                 "   TRIPLE",
+                                 "   SPREAD",
                                  "   SHIELD",
                                  " LT. TORP.",
                                  " HV. TORP.",
@@ -81,7 +81,7 @@ public class GenerateTextAndWeaponData {
              "- SPECIAL (HOLD FIRE):",
              "  MACHINE GUN."},
 
-            {"- THREE BULLETS SPREAD",
+            {"- MULTIPLE BULLETS SPREAD",
              "  FORWARD.",
              "- SPECIAL (HOLD FIRE):",
              "  MACHINE GUN."},
@@ -300,7 +300,7 @@ public class GenerateTextAndWeaponData {
                     10,11,31,31,    // transfer
                     18,19,34,35,    // bullet
                     18,19,36,35,    // twin bullet
-                    18,21,34,37,    // triple bullet
+                    18,21,34,37,    // spread bullet
                     22,23,38,39,    // shield
                     24,25,40,41,    // light torpedoes
                     24,25,40,41,    // heavy torpedoes
@@ -353,7 +353,7 @@ public class GenerateTextAndWeaponData {
                     "    db 2 ; transfer (1 - 2 credits per use)\n"+
                     "    db 3 ; bullet (1 - 2 - 3 upgrades)\n"+
                     "    db 2 ; twin bullet (1 - 2 upgrades)\n"+
-                    "    db 3 ; triple bullet (1 - 2 - 3 upgrades)\n"+
+                    "    db 3 ; spread bullet (1 - 2 - 3 upgrades)\n"+
                     "    db 2 ; shield (3 - 5 protection)\n"+
                     "    db 3 ; light torpedoes (1 - 2 - 3 upgrades)\n"+
                     "    db 3 ; heavy torpedoes (1 - 2 - 3 upgrades)\n"+
@@ -376,7 +376,7 @@ public class GenerateTextAndWeaponData {
                     "    db 32,16,16 ; transfer (1 - 2 credits per use)\n"+
                     "    db 1,2,3 ; bullet (1 - 2 - 3 upgrades)\n"+
                     "    db 1,2,3 ; twin bullet (1 - 2 upgrades)\n"+
-                    "    db 1,2,3 ; triple bullet (1 - 2 - 3 upgrades)\n"+
+                    "    db 1,2,3 ; spread bullet (1 - 2 - 3 upgrades)\n"+
                     "    db 3,5,5 ; shield (3 - 5 protection)\n"+
                     "    db 1,2,3 ; light torpedoes (1 - 2 - 3 upgrades)\n"+
                     "    db 1,2,3 ; heavy torpedoes (1 - 2 - 3 upgrades)\n"+
@@ -399,7 +399,7 @@ public class GenerateTextAndWeaponData {
                     "    db 6 ; transfer\n"+
                     "    db 2 ; bullet\n"+
                     "    db 2 ; twin bullet\n"+
-                    "    db 3 ; triple bullet\n"+
+                    "    db 3 ; spread bullet\n"+
                     "    db 2 ; shield\n"+
                     "    db 2 ; light torpedoes\n"+
                     "    db 2 ; heavy torpedoes\n"+
@@ -423,7 +423,7 @@ public class GenerateTextAndWeaponData {
                     "    db 7 ; transfer\n"+
                     "    db 2 ; bullet\n"+
                     "    db 3 ; twin bullet\n"+
-                    "    db 3 ; triple bullet\n"+
+                    "    db 3 ; spread bullet\n"+
                     "    db 6 ; shield\n"+
                     "    db 1 ; light torpedoes\n"+
                     "    db 1 ; heavy torpedoes\n"+

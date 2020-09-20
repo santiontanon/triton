@@ -229,13 +229,11 @@ draw_text_number_of_credits:
 	    ld (text_buffer+3),a
 
 	    call Div8
-	    push hl
-	    	ld hl,digit_indexes
-	    	ld b,0
-	    	ld c,a
-	    	add hl,bc
-	    	ld a,(hl)
-	    pop hl
+    	ld hl,digit_indexes
+    	ld b,0
+    	ld c,a
+    	add hl,bc
+    	ld a,(hl)
 	    ld (text_buffer+2),a
 	pop de
 	; - hl: sentence to draw (first byte is the length)

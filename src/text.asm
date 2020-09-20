@@ -83,7 +83,7 @@ draw_text_from_bank_entry_point:
     pop bc
     ld hl,text_buffer
     ld c,b
-    ld b,0
+    ld b,l  ; l == 0 here as text_buffer is 256 aligned
     jp draw_sentence
 
 
@@ -112,8 +112,8 @@ draw_text_from_bank_slow:
     pop bc
     ld hl,text_buffer
     ld c,b
-    ld b,0
-    jp draw_sentence_slow
+    ld b,l  ; l == 0 here as text_buffer is 256 aligned
+    jr draw_sentence_slow
 
 
 ; ------------------------------------------------

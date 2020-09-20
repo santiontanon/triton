@@ -235,20 +235,20 @@ clearScreenLeftToRightLoop:
 update_sprites:
     ld a,(scroll_x_half_pixel)
     and #03
-    jp z,update_sprites_pattern1
+    jr z,update_sprites_pattern1
     dec a
-    jp z,update_sprites_pattern2
+    jr z,update_sprites_pattern2
     dec a
-    jp z,update_sprites_pattern3
+    jr z,update_sprites_pattern3
 update_sprites_pattern4:
     ld de,sprite_upload_order4
-    jp update_sprites_pattern_set
+    jr update_sprites_pattern_set
 update_sprites_pattern3:
     ld de,sprite_upload_order3
-    jp update_sprites_pattern_set
+    jr update_sprites_pattern_set
 update_sprites_pattern2:
     ld de,sprite_upload_order2
-    jp update_sprites_pattern_set
+    jr update_sprites_pattern_set
 update_sprites_pattern1:
     ld de,sprite_upload_order1
 

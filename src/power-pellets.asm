@@ -282,6 +282,8 @@ power_pellet_pickup_loop:
 
 	ld hl,ingame_weapon_current_selection
 	ld a,(hl)
+	cp 7
+	jp z,select_weapon_sfx
 	inc a
 	and #07
 	ld (hl),a
