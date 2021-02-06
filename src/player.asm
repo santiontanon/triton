@@ -24,7 +24,7 @@ respawn_player:
 update_player:
 	ld a,(player_primary_weapon_special_triggered)
 	or a
-	jp nz,update_player_energy_done	; do not increase energy while using the special
+	jr nz,update_player_energy_done	; do not increase energy while using the special
 
 	; at weapon level 1, energy recharges at 1/2 speed:
 	ld a,(player_primary_weapon_level)
@@ -38,7 +38,7 @@ update_player_not_level1:
 	ld hl,player_primary_weapon_energy
 	ld a,(hl)
 	cp WEAPON_MAX_ENERGY
-	jp nc,update_player_max_energy
+	jr nc,update_player_max_energy
 	inc (hl)
 	inc a
 	and #07
@@ -51,30 +51,29 @@ update_player_energy_done:
 	ld hl,player_primary_weapon_cooldown_state
 	ld a,(hl)
 	or a
-	jp z,update_player_primary_weapon_ready
+	jr z,update_player_primary_weapon_ready
 	dec (hl)
 update_player_primary_weapon_ready:
 
 	ld hl,player_secondary_weapon_cooldown_state
 	ld a,(hl)
 	or a
-	jp z,update_player_secondary_weapon_ready
+	jr z,update_player_secondary_weapon_ready
 	dec (hl)
 update_player_secondary_weapon_ready:
 
 	ld hl,player_option_weapon_cooldown_state
 	ld a,(hl)
 	or a
-	jp z,update_player_option_weapon_ready
+	jr z,update_player_option_weapon_ready
 	dec (hl)
 update_player_option_weapon_ready:
 
 	ld a,(player_state)
 	or a
-	jp z,update_player_default_state
+	jr z,update_player_default_state
 	dec a
-	jp z,update_player_invulnerable_state
-	jp update_player_explosion_state
+	jp nz,update_player_explosion_state
 
 update_player_invulnerable_state:
 	ld hl,player_state_timer
@@ -82,12 +81,12 @@ update_player_invulnerable_state:
 	ld a,(hl)
 
 	bit 2,a
-	jp z,update_player_invulnerable_state_visible
+	jr z,update_player_invulnerable_state_visible
 update_player_invulnerable_state_invisible:
 	xor a
 	ld (player_sprite_attributes+3),a
 	ld (player_sprite_attributes+4+3),a
-	jp update_player_invulnerable_state_color_set
+	jr update_player_invulnerable_state_color_set
 update_player_invulnerable_state_visible:
 	ld a,COLOR_GREY
 	ld (player_sprite_attributes+3),a
@@ -97,7 +96,7 @@ update_player_invulnerable_state_color_set:
 
 	ld a,(hl)
 	cp INVULNERABLE_TIME
-	jp nz,update_player_default_state
+	jr nz,update_player_default_state
 	dec hl	; player_state
 	ld (hl),PLAYER_STATE_DEFAULT
 
@@ -136,7 +135,7 @@ update_player_default_state_no_move:
 	or a
 	call nz,update_player_options
 
-	; precalculate tile_x and tile_y (used later), and after check collision:
+	; precalculate tile_x and tile_y (used later), and then check collisions:
 	ld a,(player_y)
 	add a,6	; ship center
     rrca
@@ -146,7 +145,7 @@ update_player_default_state_no_move:
 	ld (player_tile_y),a
 	ld b,a
 	ld a,(player_x)
-	add a,10 ; ship center
+	add a,12 ; ship center
     rrca
     rrca
     rrca
@@ -171,36 +170,41 @@ update_player_default_state_no_move:
 
 		ld a,(player_primary_weapon)
 		cp WEAPON_LASER
-		jp z,update_player_fire_laser
+		jr z,update_player_fire_laser
 		cp WEAPON_TWISTER_LASER
-		jp z,update_player_fire_laser
+		jr z,update_player_fire_laser
 
 		; for bullet weapons, we want maximum responsiveness, so we fire on click:
 		; (for laser weapon, we fire upon fire key release, to prevent a bullet to come out right before each
 		;  laser burst)
  		ld a,(keyboard_line_clicks+KEY_BUTTON1_BYTE)
- 		bit KEY_BUTTON1_BIT,a
- 		call nz,spawn_player_bullet
+;  		bit KEY_BUTTON1_BIT,a
+;  		call nz,spawn_player_bullet
+ 		rra  ; assuming KEY_BUTTON1_BIT == 0
+ 		call c,spawn_player_bullet
 
 update_player_fire_laser:
 		ld hl,player_hold_fire_timer
 		ld a,(keyboard_line_state+KEY_BUTTON1_BYTE)
-		bit KEY_BUTTON1_BIT,a
-		jp nz,update_player_fire_not_held
+; 		bit KEY_BUTTON1_BIT,a
+; 		jp nz,update_player_fire_not_held
+ 		rra  ; assuming KEY_BUTTON1_BIT == 0
+ 		jr c,update_player_fire_not_held
+
 		inc (hl)
 
 		; fire is being held! weapon special effect!
 		ld a,(hl)
 		cp 128
-		jp c,update_player_fire_no_timer_overflow
+		jr c,update_player_fire_no_timer_overflow
 		sub 64
 		ld (hl),a	; prevent the counter from overflowing
 update_player_fire_no_timer_overflow:
  		cp TIME_PRESSING_FOR_SPECIAL	; at least some frames holding space to consider it a "hold"
- 		jp c,update_player_not_firing
+ 		jr c,update_player_not_firing
 
 		call spawn_player_bullet_fire_held
-		jp update_player_not_firing
+		jr update_player_not_firing
 
 update_player_fire_not_held:
 		ld c,(hl)	; hl = player_hold_fire_timer
@@ -210,22 +214,22 @@ update_player_fire_not_held:
 
 		ld a,(player_primary_weapon)
 		cp WEAPON_LASER
-		jp z,update_player_check_laser_fire
+		jr z,update_player_check_laser_fire
 		cp WEAPON_TWISTER_LASER
-		jp nz,update_player_not_firing
+		jr nz,update_player_not_firing
 
 update_player_check_laser_fire:
 		; only for laser (fire upon fire key release):
 		ld a,c	; (player_hold_fire_timer)
 		or a
-		jp z,update_player_not_firing
+		jr z,update_player_not_firing
 		cp TIME_PRESSING_FOR_SPECIAL
 		call c,spawn_player_bullet	; we have held space for less than the amount necessary for autofire, fire a bullet!
 
 update_player_not_firing:
 		ld a,(player_shield_level)
 		or a
-		jp z,update_player_no_shield
+		jr z,update_player_no_shield
 update_player_shield:
 		ld hl,player_y
 		ld de,player_y3
@@ -233,7 +237,7 @@ update_player_shield:
 		ldi
 		ld hl,player_shield_colors
 		dec a
-		jp nz,update_player_shield_no_last_hit
+		jr nz,update_player_shield_no_last_hit
 		ld hl,player_shield_colors_last_hit
 update_player_shield_no_last_hit:
 		ld a,(interrupt_cycle)
@@ -245,7 +249,7 @@ update_player_shield_no_last_hit:
 		ADD_HL_A
 		ld a,(hl)
 		ld (player_sprite_attributes+8+3),a
-		jp update_player_after_shield
+		jr update_player_after_shield
 update_player_no_shield:
 		ld a,200
 		ld (player_y3),a
@@ -294,12 +298,12 @@ update_player_explosion_state:
 	cp 16
 	jp p,update_player_explosion_state_frame1
 	ld a,PLAYER_SPRITE_EXPLOSION
-	jp update_player_explosion_state_frame_set
+	jr update_player_explosion_state_frame_set
 update_player_explosion_state_frame1:
 	cp 32
 	jp p,update_player_explosion_state_frame2
 	ld a,PLAYER_SPRITE_EXPLOSION+8
-	jp update_player_explosion_state_frame_set
+	jr update_player_explosion_state_frame_set
 update_player_explosion_state_frame2:
 	cp 48
 	jp p,update_player_explosion_state_lose_life
@@ -324,9 +328,11 @@ update_player_explosion_state_lose_life:
 
 
 update_player_left:
-	ld a,(player_current_movement)
+	ld hl,player_current_movement
+	ld a,(hl)
+	and #fc	; clear horizontal movement
 	or #01
-	ld (player_current_movement),a
+	ld (hl),a
 
 	ld hl,player_x
 	ld a,(hl)
@@ -339,9 +345,11 @@ update_player_left:
 
 
 update_player_right:
-	ld a,(player_current_movement)
+	ld hl,player_current_movement
+	ld a,(hl)
+	and #fc	; clear horizontal movement
 	or #02
-	ld (player_current_movement),a
+	ld (hl),a
 
 	ld hl,player_x
 	ld a,(hl)
@@ -354,14 +362,17 @@ update_player_right:
 
 
 update_player_up:
-	ld a,(player_current_movement)
+	ld hl,player_current_movement
+	ld a,(hl)
+	and #f3	; clear vertical movement
 	or #04
-	ld (player_current_movement),a
+	ld (hl),a
 
 	; change animation frame
-	ld a,(player_desired_frame)
+	ld hl,player_desired_frame
+	ld a,(hl)
 	add a,8
-	ld (player_desired_frame),a
+	ld (hl),a
 
 	ld hl,player_y
 	ld a,(hl)
@@ -374,14 +385,17 @@ update_player_up:
 
 
 update_player_down:
-	ld a,(player_current_movement)
+	ld hl,player_current_movement
+	ld a,(hl)
+	and #f3	; clear vertical movement
 	or #08
-	ld (player_current_movement),a
+	ld (hl),a
 
 	; change animation frame
-	ld a,(player_desired_frame)
+	ld hl,player_desired_frame
+	ld a,(hl)
 	add a,-8
-	ld (player_desired_frame),a
+	ld (hl),a
 
 	ld hl,player_y
 	ld a,(hl)
@@ -402,7 +416,7 @@ update_player_collision:
 	ld hl,player_state
 	ld a,(hl)
 	cp PLAYER_STATE_EXPLOSION
-	jp z,update_player_collision_already_exploding
+	jr z,update_player_collision_already_exploding
 	ld hl,player_shield_level
 	ld a,(hl)
 	ld b,a
@@ -537,7 +551,7 @@ level_up_weapon_change:
 	push hl
 		ld a,(player_primary_weapon_idx)
 		or a
-		jp z,level_up_weapon_change_no_previous
+		jr z,level_up_weapon_change_no_previous
 		ld hl,ingame_weapon_current_level
 		ADD_HL_A
 		ld (hl),0	; clear the level of the previous weapon
@@ -586,7 +600,7 @@ level_up_secondary_weapon_change:
 	push hl
 		ld a,(player_secondary_weapon_idx)
 		or a
-		jp z,level_up_secondary_weapon_change_no_previous
+		jr z,level_up_secondary_weapon_change_no_previous
 		ld hl,ingame_weapon_current_level
 		ADD_HL_A
 		ld (hl),0	; clear the level of the previous secondary weapon
@@ -604,7 +618,7 @@ level_up_option_weapon_change:
 	push hl
 		ld a,(player_option_weapon_idx)
 		or a
-		jp z,level_up_option_weapon_change_no_previous
+		jr z,level_up_option_weapon_change_no_previous
 		ld hl,ingame_weapon_current_level
 		ADD_HL_A
 		ld (hl),0	; clear the level of the previous secondary weapon

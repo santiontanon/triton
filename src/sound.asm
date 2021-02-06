@@ -9,7 +9,7 @@ Piano_instrument_profile:
 ;Wind_instrument_profile:
 ;    db 0,3,6,8,10,11,12, #ff
 
-; This is the complete note table (5 octaves):
+; This is a complete note table of 5 octaves:
 ;note_period_table:
 ;  db 7,119,  7,12,  6,167,  6,71,  5,237,  5,152,  5,71,  4,252,  4,180,  4,112,  4,49,  3,244
 ;  db 3,188,  3,134,  3,83,  3,36,  2,246,  2,204,  2,164,  2,126,  2,90,  2,56,  2,24,  1,250  
@@ -43,7 +43,8 @@ PlayMusic:
     ld (MUSIC_play),a
     ld (MUSIC_pointer),hl
     ld (MUSIC_start_pointer),hl
-    ld hl,MUSIC_repeat_stack
+    ld l,MUSIC_repeat_stack & 0x00ff  ; this assumes that music_buffer and MUSIC_repeat_stack share the msb
+;     ld hl,MUSIC_repeat_stack
     ld (MUSIC_repeat_stack_ptr),hl
     ei
     ret
@@ -108,7 +109,7 @@ update_sound:     ; This routine sould be called 50 or 60 times / sec
         push ix
         push hl
             ld ix,(MUSIC_repeat_stack_ptr)
-            xor a
+;             xor a  ; unnecessary, a must be 0 here
             ld (MUSIC_time_step_required),a
             ld hl,(MUSIC_pointer)
             call update_sound_internal
@@ -406,7 +407,7 @@ update_sound_PLAY_INSTRUMENT_CH3:
     ld a,5
 update_sound_PLAY_INSTRUMENT:
     push hl
-        push af
+;         push af
             ld b,0  ; for later use
             ld c,(hl)   ; note to play
 ;            ld hl,MUSIC_transpose
@@ -418,7 +419,7 @@ update_sound_PLAY_INSTRUMENT:
             add hl,bc
             ld e,(hl)   ; MSB of the period    
             inc hl
-        pop af
+;         pop af
         push af
             call WRTPSG
         pop af

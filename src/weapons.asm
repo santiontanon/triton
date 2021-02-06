@@ -28,7 +28,7 @@ load_weapon_tiles_loop:
 		ex de,hl
 	pop af
 	dec a
-	jp nz,load_weapon_tiles_loop
+	jr nz,load_weapon_tiles_loop
 	ret
 
 
@@ -404,7 +404,7 @@ update_player_bullets_loop:
 
 	and #7f	; ignore the "to delete" flag
 	dec a	; PLAYER_BULLET_TYPE_BULLET
-	jp z,update_player_bullets_bullet
+	jr z,update_player_bullets_bullet
 	dec a	; PLAYER_BULLET_TYPE_BULLET_BACKWARDS
 	jp z,update_player_bullets_bullet_backward
 	dec a	; PLAYER_BULLET_TYPE_BULLET_FW_UP
@@ -435,7 +435,7 @@ update_player_bullets_bullet_continue:
 	; check if bullet collided with BG, or hit an enemy:
 ; 	ld a,(ix+PLAYER_BULLET_STRUCT_TILE_Y)
 	call collisionWithMap_player_bullet
-	jp nz,update_player_bullets_disappear
+	jr nz,update_player_bullets_disappear
 	; store bg, and draw it:
 	ld a,(hl)
 	ld (ix+PLAYER_BULLET_STRUCT_BG),a
@@ -450,7 +450,7 @@ update_player_bullets_loop_next:
 
 update_player_bullets_disappear:
 	ld (ix+PLAYER_BULLET_STRUCT_TYPE),0
-	jp update_player_bullets_loop_next
+	jr update_player_bullets_loop_next
 
 
 update_player_bullets_directional_bullet:
@@ -596,11 +596,11 @@ update_player_bullets_bullet_fw_up:
 update_player_bullets_bullet_backward:
 	dec (ix+PLAYER_BULLET_STRUCT_TILE_X)
 	ld a,(ix+PLAYER_BULLET_STRUCT_TILE_X)
+	or a
+	jp m,update_player_bullets_disappear
 	ld hl,scroll_x_tile
 	sub (hl)
 	jp m,update_player_bullets_disappear
-	;cp 32
-	;jp p,update_player_bullets_disappear
 
 	; update the bullet position:
 	ld l,(ix+PLAYER_BULLET_STRUCT_BG_PTR)
@@ -670,9 +670,9 @@ update_player_laser_length_ok:
 update_player_laser_loop:
 	ld a,(hl)
 	cp FIRST_TILEENEMY_COLLIDABLE_TILE
-	jp nc,update_player_laser_loop_hit_tile_enemy
+	jr nc,update_player_laser_loop_hit_tile_enemy
 	cp FIRST_DESTROYABLEWALL_COLLIDABLE_TILE
-	jp nc,update_player_laser_loop_hit_tile_enemy_destroyablewall_choose_bank
+	jr nc,update_player_laser_loop_hit_tile_enemy_destroyablewall_choose_bank
 	cp FIRST_WALL_COLLIDABLE_TILE
 	jp nc,update_player_laser_loop_end
 update_player_laser_loop_continue:
@@ -733,7 +733,8 @@ update_player_laser_loop_hit_tile_enemy_not_boss:
 
 	ld hl,player_tile_y
 	ld c,(hl)
-	ld hl,player_tile_x
+; 	ld hl,player_tile_x
+	dec hl  ; player_tile_x
 	ld a,(hl)
 	inc a
 	add a,iyh
@@ -747,10 +748,9 @@ update_player_laser_loop_hit_tile_enemy_not_boss:
 update_player_laser_loop_hit_tile_enemy_loop:
 	ld a,(iy+TILE_ENEMY_STRUCT_TYPE)
 	or a
-	jp z,update_player_laser_loop_hit_tile_enemy_loop_next
+	jr z,update_player_laser_loop_hit_tile_enemy_loop_next
 	ld a,(iy+TILE_ENEMY_STRUCT_X)
-	dec a
-	dec a
+	add a,-2
 	cp l	; laser x
 	jp p,update_player_laser_loop_hit_tile_enemy_loop_next
 	inc a
@@ -809,7 +809,7 @@ adjust_player_bullet_positions_after_scroll_restart:
 adjust_player_bullet_positions_loop:
 	ld a,(ix)
 	or a
-	jp z,adjust_player_bullet_positions_loop_next
+	jr z,adjust_player_bullet_positions_loop_next
 	ld a,(ix+PLAYER_BULLET_STRUCT_TILE_X)
 	sub 64
 	jp m,adjust_player_bullet_positions_loop_next	; this is in the off-chance of firing a bullet exactly

@@ -17,7 +17,7 @@ update_tile_enemies_loop:
 		dec a
 		jr z,update_tile_enemy_turret_top		; TILE_ENEMY_MOAI_G_TURRET_TOP
 		dec a
-		jp z,update_tile_enemy_turret_top		; TILE_ENEMY_MOAI_R_TURRET_TOP
+		jr z,update_tile_enemy_turret_top		; TILE_ENEMY_MOAI_R_TURRET_TOP
 		dec a
 		jp z,update_tile_enemy_turret_bottom	; TILE_ENEMY_MOAI_G_TURRET_BOTTOM
 		dec a
@@ -340,7 +340,7 @@ update_tile_enemy_generator_bottom:
 	ld e,(ix+TILE_ENEMY_STRUCT_PTRL)
 	ld d,(ix+TILE_ENEMY_STRUCT_PTRH)
 	ld a,2	; enemy height
-	ld bc,4	; enemy width+1
+	ld c,4	; enemy width+1	 (b should be 0 here)
 	call copy_enemy_tiles
 
 	inc (ix+TILE_ENEMY_STRUCT_TIMER)
@@ -405,7 +405,7 @@ update_tile_enemy_generator_top_close:
 	ld e,(ix+TILE_ENEMY_STRUCT_PTRL)
 	ld d,(ix+TILE_ENEMY_STRUCT_PTRH)
 	ld a,2	; enemy height
-	ld bc,4	; enemy width+1
+	ld c,4	; enemy width+1  (b should be 0 here)
 	call copy_enemy_tiles
 	jp update_tile_enemies_loop_next
 
@@ -429,7 +429,7 @@ update_tile_enemy_waterdome_bank_set:
 	add hl,bc
 	ld d,(ix+TILE_ENEMY_STRUCT_PTRH)
 	ld e,(ix+TILE_ENEMY_STRUCT_PTRL)
-	ld b,0
+; 	ld b,0 	; b == 0 already here
 	ld c,(ix+TILE_ENEMY_STRUCT_WIDTH)
 
 	; come out:
@@ -536,7 +536,7 @@ update_tile_enemy_waterdome_clear:
 	pop bc
 	pop de
 	pop hl
-	; if tile x >= 64, we also need to clear the position x-64, ready for when ther eis a scroll restart:	
+	; if tile x >= 64, we also need to clear the position x-64, ready for when there is a scroll restart:	
 	ld a,e
 	and #7f
 	cp 64
@@ -723,8 +723,9 @@ update_tile_enemy_templecolumn_render:
 	ld hl,(level_type_tile_enemies_bank1)
 	add hl,bc
 	ld a,2	; enemy height
-	ld bc,4	; enemy width+1
-	jp copy_enemy_tiles
+; 	ld bc,4	; enemy width+1
+	ld c,4	; no need to modify b, as it's 0 already
+	jr copy_enemy_tiles
 
 
 ;-----------------------------------------------
@@ -919,7 +920,8 @@ check_tile_enemy_deletion_loop_delete:
 	ld hl,(level_type_tile_enemies_bank0)
 	add hl,bc
 	ld a,2	; enemy height
-	ld bc,6	; enemy width+1
+; 	ld bc,6	; enemy width+1
+	ld c,6	; enemy width+1	(no need to modify b here, as it's 0 already)
 	push de
 	push hl
 		call copy_enemy_tiles
@@ -970,9 +972,9 @@ check_tile_enemy_deletion_no_duplicates:
 	ld a,(iy+TILE_ENEMY_STRUCT_TYPE)
 	and #7f
 	cp TILE_ENEMY_R_TURRET_TOP
-	jp z,check_tile_enemy_deletion_power_pellet_top_turret
+	jr z,check_tile_enemy_deletion_power_pellet_top_turret
 	cp TILE_ENEMY_R_TURRET_BOTTOM
-	jp z,check_tile_enemy_deletion_power_pellet
+	jr z,check_tile_enemy_deletion_power_pellet
 check_tile_enemy_deletion_after_power_pellet:
 	; trigger an explosion:
 	ld a,(iy+TILE_ENEMY_STRUCT_TYPE)

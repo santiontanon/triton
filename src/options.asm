@@ -12,9 +12,9 @@ load_option_weapon_tiles:
 update_player_options:
 	ld a,(interrupt_cycle)
 	and #04
-	jp z,update_player_options_odd_cycle
+	jr z,update_player_options_odd_cycle
 	ld de, COLOR_WHITE + 256 * OPTION_SPRITE
-	jp update_player_options_color_set
+	jr update_player_options_color_set
 update_player_options_odd_cycle:
 	ld de, COLOR_LIGHT_BLUE + 256 * OPTION_SPRITE + 4
 
@@ -22,14 +22,14 @@ update_player_options_color_set:
 	ld hl,option_sprite_attributes
 	ld a,(player_y)
 	sub 28
-	jp nc,update_player_option1_no_y_carry
+	jr nc,update_player_option1_no_y_carry
 	xor a
 update_player_option1_no_y_carry:
 	ld (hl),a
 	inc hl
 	ld a,(player_x)
 	sub 8
-	jp nc,update_player_option1_no_x_carry
+	jr nc,update_player_option1_no_x_carry
 	xor a
 update_player_option1_no_x_carry:
 	ld (hl),a
@@ -46,14 +46,14 @@ update_player_option1_no_x_carry:
 	ld a,(player_y)
 	add a,24
 	cp 21*8-4
-	jp c,update_player_option2_no_y_carry
+	jr c,update_player_option2_no_y_carry
 	ld a,21*8-4
 update_player_option2_no_y_carry:
 	ld (hl),a
 	inc hl
 	ld a,(player_x)
 	sub 8
-	jp nc,update_player_option2_no_x_carry
+	jr nc,update_player_option2_no_x_carry
 	xor a
 update_player_option2_no_x_carry:
 	ld (hl),a
@@ -155,11 +155,13 @@ spawn_player_missile_option_bullet:
 spawn_player_missile_option_bullet_find_spot:
 	ld ix,player_secondary_bullets
 	ld de,PLAYER_SECONDARY_BULLET_STRUCT_SIZE
-	ld b,MAX_PLAYER_SECONDARY_BULLETS
+	ld b,e  ; MAX_PLAYER_SECONDARY_BULLETS happens to be equal to PLAYER_SECONDARY_BULLET_STRUCT_SIZE
+; 	ld b,MAX_PLAYER_SECONDARY_BULLETS
+
 spawn_player_missile_option_bullet_find_spot_loop:	
 	ld a,(ix+PLAYER_SECONDARY_BULLET_STRUCT_TYPE)
 	or a
-	jp z,spawn_player_missile_option_bullet_find_spot_found
+	jr z,spawn_player_missile_option_bullet_find_spot_found
 	add ix,de
 	djnz spawn_player_missile_option_bullet_find_spot_loop
 	; no spot found, ignore...

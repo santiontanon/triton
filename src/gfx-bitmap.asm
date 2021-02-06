@@ -6,10 +6,11 @@ set_bitmap_mode:
     xor a
 set_bitmap_mode_a_color:
     ld bc,8*256*3
-    ld hl,CLRTBL2
-    call fast_FILVRM
-    xor a
-    ld bc,8*256*3
+    push bc
+        ld hl,CLRTBL2
+        call fast_FILVRM
+        xor a
+    pop bc
     ld hl,CHRTBL2
     call fast_FILVRM
     ; jp set_bitmap_name_table_all_banks

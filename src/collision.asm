@@ -265,7 +265,7 @@ collisionWithMap_player_bullet_collision_with_destroyablewall_done:
 			; check if we also need to destroy it in the second copy:
 			ld a,iyl	; tile x coordinate of the collision
 			cp 64
-			jp c,collisionWithMap_player_bullet_collision_with_destroyablewall_no_need_to_copy
+			jr c,collisionWithMap_player_bullet_collision_with_destroyablewall_no_need_to_copy
 			ld d,h
 			ld e,l
 			ld bc,-64
@@ -279,7 +279,7 @@ collisionWithMap_player_bullet_collision_with_destroyablewall_no_need_to_copy:
 		pop hl
 	pop de
 	pop bc
-	jp collisionWithMap_player_bullet_collision_if_not_laser
+	jr collisionWithMap_player_bullet_collision_if_not_laser
 
 
 collisionWithMap_player_bullet_collision_with_enemy:
@@ -297,10 +297,9 @@ collisionWithMap_player_bullet_collision_with_enemy_not_boss:
 collisionWithMap_player_bullet_loop:
  		ld a,(iy+TILE_ENEMY_STRUCT_TYPE)
  		or a
- 		jp z,collisionWithMap_player_bullet_loop_next
+ 		jr z,collisionWithMap_player_bullet_loop_next
  		ld a,(iy+TILE_ENEMY_STRUCT_X)
- 		dec a
- 		dec a
+ 		add a,-2
  		cp (ix+PLAYER_BULLET_STRUCT_TILE_X)
  		jp p,collisionWithMap_player_bullet_loop_next
  		inc a
@@ -394,11 +393,11 @@ collisionWithMap_player_secondary_bullet:
 	; check for collision:
 	ld a,(hl)
 	cp FIRST_TILEENEMY_COLLIDABLE_TILE
-	jp nc,collisionWithMap_player_secondary_bullet_collision_with_enemy
+	jr nc,collisionWithMap_player_secondary_bullet_collision_with_enemy
 	cp FIRST_DESTROYABLEWALL_COLLIDABLE_TILE
-	jp nc,collisionWithMap_player_secondary_bullet_collision_with_destroyablewall
+	jr nc,collisionWithMap_player_secondary_bullet_collision_with_destroyablewall
 	cp FIRST_WALL_COLLIDABLE_TILE
-	jp nc,collisionWithMap_player_secondary_bullet_collision
+	jr nc,collisionWithMap_player_secondary_bullet_collision
 collisionWithMap_player_secondary_bullet_no_collision:
 	xor a
 	ret
@@ -424,8 +423,7 @@ collisionWithMap_player_secondary_bullet_loop:
 	or a
 	jp z,collisionWithMap_player_secondary_bullet_loop_next
 	ld a,(iy+TILE_ENEMY_STRUCT_X)
-	dec a
-	dec a
+	add a,-2
 	cp e
 	jp p,collisionWithMap_player_secondary_bullet_loop_next
 	inc a
@@ -519,7 +517,6 @@ collisionWithSpriteEnemies_secondary_bullet_loop:
 		jp m,collisionWithSpriteEnemies_secondary_bullet_loop_next
 		cp 13
 		jp p,collisionWithSpriteEnemies_secondary_bullet_loop_next
-		xor a
 
 		; collision!
 		ld a,(ix+PLAYER_SECONDARY_BULLET_STRUCT_DAMAGE)

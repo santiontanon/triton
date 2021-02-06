@@ -23,12 +23,14 @@ interrupt_callback:
         ;ld (hl),a
 ;interrupt_callback_do_not_increment_vsyncs:
         ;inc hl
-    IF DETERMINISTIC = 0
-        call randomSeedUpdate
-    ENDIF
+        ld a,(deterministic)
+        or a
+        call z,randomSeedUpdate
         ld hl,interrupt_cycle
         inc (hl)
+;         out (#2c),a
         call update_sound
+;         out (#2d),a
     pop hl
     pop af
     ei

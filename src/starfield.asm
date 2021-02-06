@@ -14,7 +14,7 @@ starfield_new_star:
 	and #3e	; (modulo 32)*2 (there is a chance that stars are outside of the viewport, and thus, not drawn)
 	add a,2	; we don't want stars at the top, as some times they flicker at 60Hz
 	cp 22*2
-	jp nc,starfield_new_star_outofbounds
+	jr nc,starfield_new_star_outofbounds
 
 	ld e,a
 	ld d,0
@@ -26,7 +26,7 @@ starfield_new_star:
 	ld l,e	; hl now has the y ptr
 	add hl,bc	; add x coordinate
 	ex de,hl	; de has the pointer to the new star
-	jp starfield_new_star_ptr_calculated
+	jr starfield_new_star_ptr_calculated
 
 starfield_new_star_outofbounds:
 	ld de,0
@@ -233,14 +233,14 @@ starfield_update_adjust_ptrs_loop:
 	ld a,(hl)
 	inc hl
 	or a
-	jp z,starfield_update_adjust_ptrs_loop_skip_star
+	jr z,starfield_update_adjust_ptrs_loop_skip_star
 	ld d,a
 	ld e,(hl)
 	dec hl	; "de" has the star pointer
 
 	ld a,(de)
 	dec a	; assuming STAR_TILE == 1
- 	jp nz,starfield_update_adjust_ptrs_loop_star_deleted
+ 	jr nz,starfield_update_adjust_ptrs_loop_star_deleted
  	ld (de),a	; a is 0 here
 starfield_update_adjust_ptrs_loop_star_deleted:
 
@@ -264,7 +264,7 @@ starfield_update_adjust_ptrs_loop_de_updated:
 
 	ld a,(de)
 	or a
- 	jp nz,starfield_update_adjust_ptrs_loop_skip_star
+ 	jr nz,starfield_update_adjust_ptrs_loop_skip_star
  	inc a
  	ld (de),a	; assuming STAR_TILE == 1
 

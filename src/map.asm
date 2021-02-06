@@ -41,13 +41,14 @@ draw_map_column_loop:
     ADD_HL_A
     ld a,iyh
     cp (MAP_HEIGHT-8)+1
-    jp z,draw_map_switch_to_bank2
+    jr z,draw_map_switch_to_bank2
     dec iyh
     jp nz,draw_map_column_loop
     ret
 
 draw_map_switch_to_bank2:
-    ld de,tileTypeBuffers+4*256
+    ld d,(tileTypeBuffers+4*256) >> 8
+;     ld de,tileTypeBuffers+4*256
     ld a,(scroll_x_half_pixel)
     srl a
     srl a   ; scroll is 2 by 2 pixels
@@ -77,5 +78,5 @@ draw_map_no_scroll_column_loop2:
     jp nz,draw_map_no_scroll_column_loop2
     add hl,de
     dec iyh
-    jp nz,draw_map_no_scroll_column_loop
+    jr nz,draw_map_no_scroll_column_loop
     ret

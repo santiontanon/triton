@@ -75,37 +75,8 @@ state_mission_screen_new_game:
 	ld ix,decompress_weapon_data_from_page1
 	call call_from_page1
 
-	ld a,INITIAL_CREDITS
-	ld (global_state_credits),a	; initial credits
-	xor a
-	ld (global_state_levels_completed),a
-	ld (global_state_bosses_defeated),a
-
-	ld hl,weapon_configuration_default_ROM
-	ld de,global_state_weapon_configuration
-	ld bc,8
-	ldir
-
-	ld hl,global_state_weapon_upgrade_level
-	ld de,global_state_weapon_upgrade_level+1
-	ld (hl),0
-	ld bc,N_WEAPONS-1
-	ldir
-	ld a,#ff
-	ld hl,global_state_weapon_upgrade_level
-	ld (hl),a	; mark the "NONE" weapon as special	
-	inc hl
-	ld a,1
-	ld (hl),a	; we start with "WEAPON_SPEED" level 1
-	inc hl
-	inc hl
-	ld (hl),a	; we start with "WEAPON_TRANSFER" level 1
-	inc hl
-	ld (hl),a	; we start with "WEAPON_BULLET" level 1
-	ld hl,global_state_weapon_upgrade_level+WEAPON_PILOTS
-	ld (hl),INITIAL_NUMBER_OF_LIVES
-
-	call generate_minimap	
+	call password_generate_initial
+	call init_game_from_password
 
 	call play_mission_song
 
@@ -116,6 +87,7 @@ state_mission_screen_new_game:
 	ld (ui_cursor_position),a
 	ld a,4
 	ld (ui_cursor_area),a
+	; jp state_mission_screen
 
 
 ;-----------------------------------------------
@@ -123,35 +95,43 @@ state_mission_screen:
 	ld sp,#F380	; we might come here from within some function for convenience, so, just reset stack
 
 	; draw the text:
-	ld c,TEXT_MISSION_INSTRUCTIONS_BANK
+	ld bc,TEXT_MISSION_INSTRUCTIONS_BANK + 30*8*256
 	ld a,TEXT_MISSION_INSTRUCTIONS_IDX
 	ld de,CHRTBL2+(16*32+1)*8
 	ld iyl,COLOR_WHITE*16
-	ld b,30*8
 	call draw_text_from_bank
 
 	; button "upgrade":
-	ld hl,CHRTBL2+(32*18+8)*8
+	ld hl,CHRTBL2+(32*18+3)*8
 	ld bc,3*256+7*8
 	ld a,COLOR_DARK_BLUE
 	call draw_button
-	ld c,TEXT_UPGRADE_BANK
+	ld bc,TEXT_UPGRADE_BANK + 6*8*256
 	ld a,TEXT_UPGRADE_IDX
-	ld de,CHRTBL2+(32*19+9)*8-1
+	ld de,CHRTBL2+(32*19+4)*8-1
 	ld iyl,COLOR_DARK_BLUE + COLOR_WHITE*16
-	ld b,6*8
+	call draw_text_from_bank	
+
+	; button "password":
+	ld hl,CHRTBL2+(32*18+12)*8
+	ld bc,3*256+8*8
+	ld a,COLOR_DARK_BLUE
+	call draw_button
+	ld bc,TEXT_PASSWORD_BANK + 6*8*256
+	ld a,TEXT_PASSWORD_IDX
+	ld de,CHRTBL2+(32*19+13)*8-1
+	ld iyl,COLOR_DARK_BLUE + COLOR_WHITE*16
 	call draw_text_from_bank	
 
 	; button "quit":
-	ld hl,CHRTBL2+(32*18+18)*8
+	ld hl,CHRTBL2+(32*18+22)*8
 	ld bc,3*256+6*8
 	ld a,COLOR_DARK_BLUE
 	call draw_button
-	ld c,TEXT_QUIT_BANK
+	ld bc,TEXT_QUIT_BANK + 4*8*256
 	ld a,TEXT_QUIT_IDX
-	ld de,CHRTBL2+(32*19+20)*8-1
+	ld de,CHRTBL2+(32*19+23)*8-1
 	ld iyl,COLOR_DARK_BLUE + COLOR_WHITE*16
-	ld b,4*8
 	call draw_text_from_bank	
 
 
@@ -228,8 +208,11 @@ draw_boss_position_continue:
 	add hl,hl
 	add hl,hl
 	add hl,bc
-	ld bc,3
-	add hl,bc
+; 	ld bc,3
+; 	add hl,bc
+	inc hl
+	inc hl
+	inc hl
 
 	add hl,hl
 	add hl,hl
@@ -294,17 +277,22 @@ state_mission_screen_from_game_complete:
 
 
 state_mission_screen_from_upgrade:
-	call setup_mission_screen_frames
-
-	call play_mission_song
-
 	; start in UPGRADE:
 	xor a
 	ld (ui_cursor_position),a
+state_mission_screen_from_password_entrypoint:
 	ld a,5
 	ld (ui_cursor_area),a
 
+	call setup_mission_screen_frames
+	call play_mission_song
 	jp state_mission_screen
+
+
+state_mission_screen_from_password:
+	ld a,13
+	ld (ui_cursor_position),a
+	jr state_mission_screen_from_password_entrypoint
 
 
 ;-----------------------------------------------
@@ -363,9 +351,9 @@ state_mission_move_cursor_up:
 	ld hl,ui_cursor_position
 	ld a,(hl)
 	cp 13
-	jr nz,state_mission_move_cursor_up_not_quit
+	jr c,state_mission_move_cursor_up_no_correction
 	ld (hl),9
-state_mission_move_cursor_up_not_quit:
+state_mission_move_cursor_up_no_correction:
 	ld hl,SFX_ui_move
 	jp play_SFX_with_high_priority	
 
@@ -390,10 +378,18 @@ state_mission_move_cursor_sfx:
 	ld hl,SFX_ui_move
 	jp play_SFX_with_high_priority	
 
+	; upgrade: 2
+	; password: 6
+	; quit: 14
 state_mission_move_cursor_left_buttons:
 	ld a,(hl)
-	cp 13
+	cp 14
+	jr z,state_mission_move_cursor_left_buttons1
+	cp 6
 	ret c
+	ld (hl),2
+	jr state_mission_move_cursor_sfx
+state_mission_move_cursor_left_buttons1:
 	ld (hl),6
 	jr state_mission_move_cursor_sfx
 
@@ -408,11 +404,17 @@ state_mission_move_cursor_right:
 	inc (hl)
 	jr state_mission_move_cursor_sfx
 
+	; upgrade: 2
+	; password: 6
+	; quit: 14
 state_mission_move_cursor_right_buttons:	
 	ld a,(hl)
-	cp 13
-	ret nc
-	ld (hl),13
+	cp 6
+	jr nc,state_mission_move_cursor_right_buttons1
+	ld (hl),6
+	jr state_mission_move_cursor_sfx
+state_mission_move_cursor_right_buttons1:
+	ld (hl),14
 	jr state_mission_move_cursor_sfx
 
 state_mission_move_cursor_button1:
@@ -438,10 +440,15 @@ state_mission_move_cursor_button1_wrong:
 	jp play_SFX_with_high_priority
 
 
+	; upgrade: 2
+	; password: 6
+	; quit: 14
 state_mission_move_cursor_button1_buttons:
 	ld a,(ui_cursor_position)
-	cp 13
+	cp 14
 	jp z,state_gameover_screen
+	cp 6
+	jr nc,state_mission_move_cursor_button1_selected_password
 	jr state_mission_move_cursor_button1_selected_upgrade
 
 state_mission_move_cursor_button1_no_nebula:
@@ -466,49 +473,9 @@ state_mission_move_cursor_button1_no_nebula:
 	ld (hl),a
 
 	; mark if there is a boss or not:
+	call state_mission_boss_under_cursor
 	inc hl	; hl = global_state_selected_level_boss
-	ld (hl),0
-
-    ; debug:
-;     ld (hl),1	; polyphemus
-;     ld (hl),2	; scylla
-;     ld (hl),3	; charybdis
-;     ld (hl),4	; triton
-	
-	ld a,(global_state_levels_completed)
-	cp 2
-	jr z,state_mission_move_cursor_button1_boss
-	
-	ld a,(global_state_boss2_position)
-	ld c,a
-	ld a,(ui_cursor_position)
-	cp 6	; x position of boss 2
-	jr z,state_mission_move_cursor_button1_check_if_boss
-
-	ld a,(global_state_boss3_position)
-	ld c,a
-	ld a,(ui_cursor_position)
-	cp 9	; x position of boss 3
-	jr z,state_mission_move_cursor_button1_check_if_boss
-
-	ld a,(ui_cursor_position)
-	cp 12	; x position of boss 4
-	jr z,state_mission_move_cursor_button1_boss
-
-	jr state_mission_move_cursor_button1_no_boss
-
-state_mission_move_cursor_button1_check_if_boss:
-	ld a,(ui_cursor_area)
-	add a,a
-	cp c
-	jr nz,state_mission_move_cursor_button1_no_boss
-
-state_mission_move_cursor_button1_boss:
-	; There is a boss:
-	ld a,(global_state_bosses_defeated)
-	inc a
 	ld (hl),a
-state_mission_move_cursor_button1_no_boss:	
 	jp state_game_start
 
 state_mission_move_cursor_button1_selected_upgrade:
@@ -516,14 +483,67 @@ state_mission_move_cursor_button1_selected_upgrade:
 	call play_SFX_with_high_priority
 	jp state_weapons_screen
 
+state_mission_move_cursor_button1_selected_password:
+	ld hl,SFX_ui_select
+	call play_SFX_with_high_priority
+	jp state_password
+
+
+;-----------------------------------------------
+state_mission_boss_under_cursor:
+    ; debug:
+;     ld a,1	; polyphemus
+;     ld a,2	; scylla
+;     ld a,3	; charybdis
+;     ld a,4	; triton		
+;	  ret
+	ld a,(global_state_levels_completed)
+	cp 2
+	jr z,state_mission_boss_under_cursor_boss
+	
+	ld a,(global_state_boss2_position)
+	ld c,a
+	ld a,(ui_cursor_position)
+	cp 6	; x position of boss 2
+	jr z,state_mission_boss_under_cursor_check_if_boss
+
+	ld a,(global_state_boss3_position)
+	ld c,a
+	ld a,(ui_cursor_position)
+	cp 9	; x position of boss 3
+	jr z,state_mission_boss_under_cursor_check_if_boss
+
+	ld a,(ui_cursor_position)
+	cp 12	; x position of boss 4
+	jr z,state_mission_boss_under_cursor_boss
+	jr state_mission_boss_under_cursor_no_boss
+
+state_mission_boss_under_cursor_check_if_boss:
+	ld a,(ui_cursor_area)
+	add a,a
+	cp c
+	jr nz,state_mission_boss_under_cursor_no_boss
+
+state_mission_boss_under_cursor_boss:
+	; There is a boss:
+	ld a,(global_state_bosses_defeated)
+	inc a
+	ret
+
+state_mission_boss_under_cursor_no_boss:
+	xor a
+	ret
+
 
 ;-----------------------------------------------
 state_mission_draw_cursor:
 	ld hl,ui_cursor_sprites
-	ld de,ui_cursor_sprites+1
-	ld (hl),0
 	ld bc,2*4-1
-	ldir
+	call clear_memory
+; 	ld de,ui_cursor_sprites+1
+; 	ld (hl),0
+; 	ld bc,2*4-1
+; 	ldir
 
 	ld a,(interrupt_cycle)
 	bit 3,a
@@ -560,18 +580,36 @@ state_mission_draw_cursor_no_playable_planet:
 	ld (hl),a
 	ret
 
+; state_mission_draw_cursor_buttons:
+; 	ld a,(ui_cursor_position)
+; 	cp 13
+; 	jr nc,state_mission_draw_cursor_buttons_quit
+; 	ld de,62*256+106
+; 	jr state_mission_draw_cursor_buttons_continue
+; state_mission_draw_cursor_buttons_quit:	
+; 	ld de,142*256+178
+
 state_mission_draw_cursor_buttons:
+	ld c,147
 	ld a,(ui_cursor_position)
-	cp 13
-	jr nc,state_mission_draw_cursor_buttons_quit
-	ld de,62*256+106
+	cp 14
+	jr z,state_mission_draw_cursor_buttons_quit
+	cp 6
+	jr nc,state_mission_draw_cursor_buttons_password
+	ld de,22*256+66
 	jr state_mission_draw_cursor_buttons_continue
 state_mission_draw_cursor_buttons_quit:	
-	ld de,142*256+178
+	ld de,174*256+210
+	jr state_mission_draw_cursor_buttons_continue
+state_mission_draw_cursor_buttons_password:	
+	ld de,94*256+146
 
+	; c: y
+	; d: left x
+	; e: right x
 state_mission_draw_cursor_buttons_continue:
 	ld hl,ui_cursor_sprites
-	ld (hl),147
+	ld (hl),c
 	inc hl
 	ld (hl),d
 	inc hl
@@ -579,7 +617,7 @@ state_mission_draw_cursor_buttons_continue:
 	inc hl
 	ld (hl),COLOR_DARK_YELLOW
 	inc hl
-	ld (hl),147
+	ld (hl),c
 	inc hl
 	ld (hl),e
 	inc hl
@@ -721,8 +759,7 @@ state_mission_screen_pointer_over_playable_planet_is_green_path:
 	and #03
 	dec a
 	jr z,state_mission_screen_pointer_over_playable_planet_is_green_path_diag2
-	dec a
-	dec a
+	add a,-2
 	jr z,state_mission_screen_pointer_over_playable_planet_is_green_path_diag1
 
 	xor a
@@ -748,6 +785,8 @@ state_mission_screen_pointer_over_playable_planet_is_green_path_no:
 
 
 ;-----------------------------------------------
+; input: 
+; - hl: pointer to the minimap
 enable_nearby_minimap_paths:
 	call get_minimap_pointer
 
@@ -862,17 +901,17 @@ state_mission_screen_cutscene_game_start:
 
 
 state_mission_screen_cutscene_mission_failed:
-	call draw_general
 	ld hl,mission_cutscene_0_text
 	jr state_mission_screen_cutscene_level1_continue
 
 
 state_mission_screen_cutscene_level1:
-	call draw_general
-
 	ld hl,mission_cutscene_2_text
 
 state_mission_screen_cutscene_level1_continue:
+	push hl
+		call draw_general
+	pop hl
 	ld iyh,23*8	
 	ld de,CHRTBL2+(16*32+8)*8
 	call state_story_cutscene
@@ -891,22 +930,18 @@ state_mission_screen_cutscene_level1_continue:
 	jp state_mission_screen
 
 state_mission_screen_cutscene_level2:
-	call draw_general
 	ld hl,mission_cutscene_3_text
 	jr state_mission_screen_cutscene_level1_continue
 
 state_mission_screen_cutscene_boss1:
-	call draw_general
 	ld hl,mission_cutscene_4_text
 	jr state_mission_screen_cutscene_level1_continue
 
 state_mission_screen_cutscene_boss2:
-	call draw_general
 	ld hl,mission_cutscene_5_text
 	jr state_mission_screen_cutscene_level1_continue
 
 state_mission_screen_cutscene_boss3:
-	call draw_general
 	ld hl,mission_cutscene_6_text
 	jr state_mission_screen_cutscene_level1_continue
 
@@ -974,25 +1009,22 @@ draw_minimap_not_bg:
 	ld iyl,COLOR_WHITE*16
 	call draw_text_from_bank_16
 
-	ld c,TEXT_TRITON_BANK
+	ld bc,TEXT_TRITON_BANK + 8*4*256
 	ld a,TEXT_TRITON_IDX
 	ld de,CHRTBL2+(2*32+26)*8-1
 	ld iyl,COLOR_WHITE*16
-	ld b,8*4
 	call draw_text_from_bank
 
-	ld c,TEXT_AIGAI_BANK
+	ld bc,TEXT_AIGAI_BANK + 8*4*256
 	ld a,TEXT_AIGAI_IDX
 	ld de,CHRTBL2+(5*32+25)*8
 	ld iyl,COLOR_WHITE*16
-	ld b,8*4
 	call draw_text_from_bank
 
-	ld c,TEXT_NEBULA_BANK
+	ld bc,TEXT_NEBULA_BANK + 8*4*256
 	ld a,TEXT_NEBULA_IDX
 	ld de,CHRTBL2+(6*32+25)*8
 	ld iyl,COLOR_WHITE*16
-	ld b,8*4
 	call draw_text_from_bank
 
 	; draw collected maps:

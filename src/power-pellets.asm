@@ -3,6 +3,9 @@
 ; - c: tile x
 ; - b: tile y
 spawn_power_pellet:
+	ld a,(scroll_restart)
+	or a					
+	ret nz  ; do not spawn power pellets on scroll restart cycles to avoid an edge case
 	ld hl,power_pellets
 	ld de,POWER_PELLET_STRUCT_SIZE
 	ld a,MAX_POWER_PELLETS
@@ -71,13 +74,12 @@ spawn_power_pellet_bank_selected:
 
 	ld hl,redraw_power_pellets_signal
 	ld (hl),1
-
 	ret
 spawn_power_pellet_next:
 		add hl,de
 	pop af
 	dec a
-	jp nz,spawn_power_pellet_loop
+	jr nz,spawn_power_pellet_loop
 	ret
 
 spawn_power_pellet_not_allowed:
@@ -94,27 +96,26 @@ power_pellets_restore_bg:
 power_pellets_restore_bg_loop:
 	ld a,(hl)
 	or a
-	jp z,power_pellets_restore_bg_next
+	jr z,power_pellets_restore_bg_next
 	; restore bg:
 	push hl
 	push de
 	push bc
 		rla
-		jp nc,power_pellets_restore_bg_loop_no_deletion
+		jr nc,power_pellets_restore_bg_loop_no_deletion
 		; it was marked for deletion, delete it
 		ld (hl),0
 power_pellets_restore_bg_loop_no_deletion:
 		inc hl	; skip type
 		ld a,(scroll_x_tile)
-		dec a
-		dec a
+		add a,-2
 		cp (hl)	; x
 		jp p,power_pellets_restore_bg_loop_skip
 		inc hl
 		inc hl
 		ld a,(hl)	; check if any BG has been saved yet
 		or a
-		jp z,power_pellets_restore_bg_loop_continue
+		jr z,power_pellets_restore_bg_loop_continue
 		inc hl
 		ld e,(hl)
 		inc hl
@@ -135,7 +136,7 @@ power_pellets_restore_bg_next:
 power_pellets_restore_bg_loop_skip:	
 	dec hl
 	ld (hl),0	; remove the power pellet
-	jp power_pellets_restore_bg_loop_continue
+	jr power_pellets_restore_bg_loop_continue
 
 
 ;-----------------------------------------------
@@ -147,7 +148,7 @@ power_pellets_draw:
 power_pellets_draw_loop:
 	ld a,(hl)
 	or a
-	jp z,power_pellets_draw_next
+	jr z,power_pellets_draw_next
 	push hl
 	push de
 	push bc
@@ -177,7 +178,7 @@ power_pellets_draw_loop:
 		cp 8		; a has the value of "y"
 		jp p,power_pellets_draw_bank1
 		ld hl,power_pellet_types_bank0
-		jp power_pellets_draw_bank_set
+		jr power_pellets_draw_bank_set
 power_pellets_draw_bank1:
 		ld hl,power_pellet_types_bank1
 power_pellets_draw_bank_set:
@@ -196,7 +197,7 @@ power_pellets_draw_next:
 power_pellets_draw_loop_skip:	
 	dec hl
 	ld (hl),0	; remove the power pellet
-	jp power_pellets_draw_loop_continue
+	jr power_pellets_draw_loop_continue
 
 
 ;-----------------------------------------------
@@ -209,7 +210,7 @@ adjust_power_pellet_positions_after_scroll_restart:
 adjust_power_pellet_positions_loop:
 	ld a,(ix)
 	or a
-	jp z,adjust_power_pellet_positions_loop_next
+	jr z,adjust_power_pellet_positions_loop_next
 	ld a,(ix+POWER_PELLET_STRUCT_X)
 	sub 64
 	jp p,adjust_power_pellet_positions_adjust
@@ -237,7 +238,7 @@ adjust_power_pellet_positions_adjust:
  		cp 8
  		jp p,adjust_power_pellet_positions_bank1
  		ld hl,power_pellet_types_bank0
- 		jp adjust_power_pellet_positions_bank_set
+ 		jr adjust_power_pellet_positions_bank_set
 adjust_power_pellet_positions_bank1:
  		ld hl,power_pellet_types_bank1
 adjust_power_pellet_positions_bank_set:
@@ -246,7 +247,7 @@ adjust_power_pellet_positions_bank_set:
  		ldi
  	pop de
  	pop bc
-	jp adjust_power_pellet_positions_loop_next
+	jr adjust_power_pellet_positions_loop_next
 
 
 
@@ -260,10 +261,10 @@ power_pellet_pickup:
 power_pellet_pickup_loop:
 	ld a,(ix)
 	or a
-	jp z,power_pellet_pickup_loop_next
+	jr z,power_pellet_pickup_loop_next
 	ld a,c
 	cp (ix+POWER_PELLET_STRUCT_Y)
-	jp nz,power_pellet_pickup_loop_next
+	jr nz,power_pellet_pickup_loop_next
 	ld a,(player_tile_x)
 	cp (ix+POWER_PELLET_STRUCT_X)
 	jp m,power_pellet_pickup_loop_next

@@ -271,7 +271,8 @@ update_triton_clear:
 	ld c,200
 	ld hl,enemy_sprite_attributes+(MAX_ENEMIES-3)*4
 	ld (hl),c
-	ld hl,enemy_sprite_attributes
+	ld l,enemy_sprite_attributes&#00ff  ; assuming that h does not change!
+; 	ld hl,enemy_sprite_attributes
 	ld (hl),c
 	ld hl,enemy_sprite_attributes+4
 	ld (hl),c

@@ -18,7 +18,7 @@ pletter_unpack:
   push hl
 
   ld bc,-1
-  xor 0e0h
+  xor #e0
   scf
   adc a,a
   rl c

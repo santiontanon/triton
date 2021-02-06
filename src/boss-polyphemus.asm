@@ -309,7 +309,9 @@ update_polyphemus_clear:
 	jr z,update_polyphemus_clear_skip_sprites
 	ld hl,enemy_sprite_attributes
 	ld (hl),c
-	ld hl,enemy_sprite_attributes+4
+	ld l,(enemy_sprite_attributes+4)&#00ff  ; assuming that h does not change!
+; 	ld hl,enemy_sprite_attributes+4
+
 	ld (hl),c
 update_polyphemus_clear_skip_sprites:
 

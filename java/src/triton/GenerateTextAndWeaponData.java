@@ -157,6 +157,9 @@ public class GenerateTextAndWeaponData {
         lines_with_constant.put("CREDITS:", "MONEY");
         lines_with_constant.put("  BACK", "BACK");
         lines_with_constant.put("UPGRADE", "UPGRADE");
+        lines_with_constant.put("PASSWORD", "PASSWORD");
+        lines_with_constant.put("CURRENT PASSWORD", "CURRENT_PASSWORD");
+        lines_with_constant.put("  LOAD", "LOAD");
         lines_with_constant.put("EQUIPPED", "EQUIPPED");
         lines_with_constant.put(" UPGRD", "UPGRD");
         lines_with_constant.put("   MAX", "MAX");
@@ -168,6 +171,8 @@ public class GenerateTextAndWeaponData {
         lines_with_constant.put("NEBULA", "NEBULA");
         lines_with_constant.put(" UPGRADE YOUR SHIP OR CHOOSE A PLANET TO ATTACK!", "MISSION_INSTRUCTIONS");
         lines_with_constant.put("SYSTEM CLEAR", "SYSTEM_CLEAR");
+        
+        lines_with_constant.put("0123456789ABCDEFGHIJKLMNOPQRSTUV", "PASSWORD_TABLE");
         
         // Story:
         lines_with_constant.put("YEAR 9918", "CUTSCENE_1_1");
@@ -247,7 +252,7 @@ public class GenerateTextAndWeaponData {
         lines_with_constant.put("MSXDEV 2020 COMPO", "E_CUTSCENE_11");
         lines_with_constant.put("KEEP THE MSX ALIVE!", "E_CUTSCENE_12");
 
-        lines_with_constant.put("V1.1", "VERSION");
+        lines_with_constant.put("V1.2", "VERSION");
         
         for(String s:lines_with_constant.keySet()) {
             if (!lines.contains(s)) lines.add(s);
@@ -452,13 +457,13 @@ public class GenerateTextAndWeaponData {
     {
         List<String> bestLines = null;
         EncodeText.useaplib = false;
+//        EncodeText.useaplib = true;
         int best_size = 0;
-        int best_seed = 0;      // seed 234: 1899 (for group_size 512, with 0.5 lateral moves)
-                                // seed 0: 1903 (for group size 600)
-                                // seed 3: 1874 (for group size 640)
-                                // seed 6: 1850 (for group size 700)
-        for(int seed = 0;seed<0+1;seed++) {
-//        for(int seed = 0;seed<1000;seed++) {
+        int best_seed = 0;      // seed 0: 2058 (for group_size 512, with 0.5 lateral moves)
+                                // seed 44: 2017 (for group_size 512, with 0.5 lateral moves)
+                                // seed 0: 2040 (for group_size 512, with 0.5 lateral moves, aplib)
+        for(int seed = 44;seed<44+1;seed++) {
+//        for(int seed = 1;seed<1000;seed++) {
 //        for(int seed = 234;seed<234+1;seed++) {
 
             Pair<List<String>,Integer> tmp = optimizeGrouppingsInternal(input_lines, font, group_size, seed);
@@ -485,6 +490,11 @@ public class GenerateTextAndWeaponData {
         Collections.shuffle(lines, r);
         int initial_size = EncodeText.estimateSizeOfAllTextBanks(lines, font, group_size);
         int best = initial_size;
+        int raw_size = 0;
+        for(String line:lines) {
+            raw_size += line.length() + 1;
+        }
+        System.out.println("Original raw sie: " + raw_size);
         System.out.println("Original order size: " + EncodeText.estimateSizeOfAllTextBanks(input_lines, font, group_size));
         System.out.println("Initial size (seed " + seed + "):" + initial_size);
 

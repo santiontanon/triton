@@ -24,7 +24,7 @@ fast_FILVRM:
     pop de
     ld a,e
     or a
-    jp z,fast_FILVRM_no_inc
+    jr z,fast_FILVRM_no_inc
     inc d
 fast_FILVRM_no_inc:
     pop af

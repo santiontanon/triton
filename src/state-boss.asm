@@ -1,31 +1,23 @@
 ;-----------------------------------------------
 state_boss:
-	xor a
 	ld hl,boss_variables_start
-	ld de,boss_variables_start+1
 	ld bc,(boss_variables_end-boss_variables_start)-1
-	ld (hl),a
-	ldir
+	call clear_memory
 	
+	xor a
 	ld (scroll_x_half_pixel),a
 	ld (starfield_scroll_speed),a
 	inc a
 	ld (in_boss),a
 
 	call power_pellets_restore_bg
-	xor a
 	ld hl,power_pellets
-	ld de,power_pellets+1
 	ld bc,MAX_POWER_PELLETS*POWER_PELLET_STRUCT_SIZE-1
-	ld (hl),a
-	ldir
+	call clear_memory
 
-	xor a
 	ld hl,pcg_map_pattern_buffer
-	ld de,pcg_map_pattern_buffer+1
-	ld (hl),a
-	ld bc,PCG_PATTERN_WIDTH*MAP_HEIGHT	
-	ldir
+	ld bc,PCG_PATTERN_WIDTH*MAP_HEIGHT-1
+	call clear_memory
 
 	ld ix,decompress_boss_song_from_page1
 	call call_from_page1
@@ -39,7 +31,7 @@ state_boss_loop:
 	call update_scroll_boss
     ld a,(scroll_x_half_pixel)
     and #01
-    jp z,boss_loop_even
+    jr z,boss_loop_even
 
     ; ---- odd cycles: ----
 boss_loop_odd:
@@ -52,14 +44,14 @@ boss_loop_odd:
 
 	    ld a,(scroll_x_half_pixel)
 	    dec a
-	    jp nz,boss_loop_skip_player_bullet_adjust
+	    jr nz,boss_loop_skip_player_bullet_adjust
 		ld a,(scroll_x_tile)
 		and #3f
 		call z,game_loop_adjust_positions_after_scroll_restart
 boss_loop_skip_player_bullet_adjust:
 		call update_explosions
 		call update_player_bullets
-	    jp boss_loop_continue
+	    jr boss_loop_continue
 
 	; ---- even cycles: ----
 boss_loop_even:
@@ -91,7 +83,7 @@ update_scroll_boss:
 	inc a
 	and #0f
 	ld (scroll_x_half_pixel),a
-	jp nz,update_scroll_boss_no_tile_increase
+	jr nz,update_scroll_boss_no_tile_increase
 	ld a,(scroll_x_tile)
 	inc a
 	and #3f

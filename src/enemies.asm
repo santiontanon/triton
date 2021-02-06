@@ -83,7 +83,7 @@ update_enemy_hit_no_power_pellet:
 	ld (ix+ENEMY_STRUCT_TYPE),ENEMY_EXPLOSION
 	ld (ix+ENEMY_STRUCT_STATE),0
 	ld (ix+ENEMY_STRUCT_TIMER),3
-	xor 0
+	xor a
 	ret
 
 
@@ -175,7 +175,7 @@ update_enemy_trilo_movement_done:
 update_enemy_trilo_loop_done:
 
 	; this one is special, as it folow "difficulty_sprite_fire_rate_none" instead of "difficulty_sprite_fire_rate_slow"
-	JP_IF_RANDOM_GEQ difficulty_sprite_fire_rate_none,update_enemy_trilo_sprites
+	JP_IF_RANDOM_GEQ_NO_PUSH_HL difficulty_sprite_fire_rate_none,update_enemy_trilo_sprites
 	call update_enemy_fire_bullet_check_fire_bullet
 
 update_enemy_trilo_sprites:
@@ -265,9 +265,9 @@ update_enemy_fish_top_fire:
 	inc (ix+ENEMY_STRUCT_TIMER)
 	ld a,(ix+ENEMY_STRUCT_TIMER)
 	cp 96
-	jp nc,update_enemy_fish_top_fire_state3
+	jr nc,update_enemy_fish_top_fire_state3
 	cp 48
-	jp nc,update_enemy_fish_top_fire_state2
+	jr nc,update_enemy_fish_top_fire_state2
 update_enemy_fish_top_fire_state1:
 	call enemy_move_down
 	ld e,ENEMY_SPRITE_FISH+8
@@ -275,10 +275,10 @@ update_enemy_fish_top_fire_state1:
 update_enemy_fish_top_fire_state2:
 	ld e,ENEMY_SPRITE_FISH
 	sub 72
-	jp nz,update_enemy_fish_movement_done
+	jr nz,update_enemy_fish_movement_done
 	ld a,d
 	dec a	; if cycle == 72 and d == 1 (last movement cycle), fire!
-	jp nz,update_enemy_fish_movement_done
+	jr nz,update_enemy_fish_movement_done
 	call update_enemy_fire_bullet_check_fire_bullet
 	jp update_enemy_fish_sprites
 update_enemy_fish_top_fire_state3:
@@ -519,7 +519,7 @@ update_enemy_walker_loop_done:
 	jr nz,update_enemy_walker_sprites
 
 	; chance to stop and fire:
-	JP_IF_RANDOM_GEQ difficulty_fire_rate_fast, update_enemy_walker_sprites 
+	JP_IF_RANDOM_GEQ_NO_PUSH_HL difficulty_fire_rate_fast, update_enemy_walker_sprites 
 	ld (ix+ENEMY_STRUCT_TIMER),0
 	inc (ix+ENEMY_STRUCT_STATE)
 
@@ -619,7 +619,7 @@ update_enemy_face:
 	pop af
 	call m,enemy_move_up
 
-	JP_IF_RANDOM_GEQ difficulty_sprite_fire_rate_slow,update_enemy_face_sprites
+	JP_IF_RANDOM_GEQ_NO_PUSH_HL difficulty_sprite_fire_rate_slow,update_enemy_face_sprites
 	call update_enemy_fire_bullet_check_fire_bullet
 
 update_enemy_face_sprites:
@@ -638,7 +638,7 @@ update_enemy_face_sprites_set:
 	add a,b
 	ld e,a
 	ld d,ENEMY_COLOR_FACE
-	jp update_enemy_draw_sprite
+; 	jp update_enemy_draw_sprite
 
 
 ;-----------------------------------------------
@@ -805,7 +805,7 @@ spawn_enemy_wave_next_ptr:
 
 	inc ix
 	inc ix
-	jp spawn_enemy_wave_loop
+	jr spawn_enemy_wave_loop
 
 
 ;-----------------------------------------------
@@ -815,7 +815,7 @@ check_for_enemies_to_spawn:
 	cp #ff
 	ret z
 	or a
-	jp z,check_for_enemies_to_spawn_spawn
+	jr z,check_for_enemies_to_spawn_spawn
 	; decrease the timer:
 	ld a,(difficulty_enemy_speed)
 	ld b,a
@@ -831,14 +831,14 @@ check_for_enemies_to_spawn_spawn:
 
 	ld a,h
 	cp enemy_spawn_queue_end/256
-	jp nz,check_for_enemies_to_spawn_next_ptr
+	jr nz,check_for_enemies_to_spawn_next_ptr
 	ld a,l
 	cp enemy_spawn_queue_end%256
-	jp nz,check_for_enemies_to_spawn_next_ptr
+	jr nz,check_for_enemies_to_spawn_next_ptr
 	ld hl,enemy_spawn_queue
 check_for_enemies_to_spawn_next_ptr:	
 	ld (enemy_spawn_queue_next_to_pop),hl
-	jp check_for_enemies_to_spawn	; check the next enemy (maybe there are two enemies to spawn in a row)
+	jr check_for_enemies_to_spawn	; check the next enemy (maybe there are two enemies to spawn in a row)
 
 
 ;-----------------------------------------------
@@ -863,7 +863,8 @@ spawn_enemy_from_spawn_record_find_spot_loop:
 	; found no enemy spot! ignore the enemy spawn
 	ld de,ENEMY_SPAWN_STRUCT_SIZE
 	add hl,de
-	or 1	; nz
+; 	or 1	; nz
+	inc b  ; nz (since b is 0 before this line)
 	ret
 
 spawn_enemy_from_spawn_record_found_spot:
@@ -959,6 +960,8 @@ spawn_enemy_from_spawn_check_walker_position_not_ok:
 ; Since the scroll works on a circular buffer, when the scroll circles back, 
 ; we need to adjust the coordinates of the enemies, to bring them back to where the viewport is
 adjust_enemy_positions_after_scroll_restart:
+	ld hl,scroll_restart	; this is the first function called when there is a scroll restart, so,
+	ld (hl),1				; to save a few bytes, we just put this here
 	ld ix,enemies
 	ld b,MAX_ENEMIES
 	ld de,ENEMY_STRUCT_SIZE

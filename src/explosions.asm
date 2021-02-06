@@ -11,7 +11,7 @@ spawn_sprite_explosion:
 spawn_sprite_explosion_loop:
 	ld a,(ix)
 	or a
-	jp z,spawn_sprite_explosion_found_spot
+	jr z,spawn_sprite_explosion_found_spot
 	add ix,de
 	djnz spawn_sprite_explosion_loop
 	; no spot available:
@@ -42,7 +42,7 @@ spawn_tile_explosion:
 spawn_tile_explosion_loop:
 	ld a,(ix+TILE_EXPLOSION_TIME)
 	or a
-	jp nz,spawn_tile_explosion_loop_next
+	jr nz,spawn_tile_explosion_loop_next
 	; found!
 	ld hl,SFX_explosion
 	call play_SFX_with_high_priority
@@ -58,8 +58,8 @@ spawn_tile_explosion_loop:
 	ld (ix+TILE_EXPLOSION_PTRL),l
 	ld (ix+TILE_EXPLOSION_PTRH),h
 	; save background:
-	ld e,ixl
-	ld d,ixh
+	push ix
+	pop de
 	inc de
 	ld a,4
 	ld bc,4
@@ -80,9 +80,9 @@ update_explosions:
 update_explosions_loop:
 	ld a,(ix+TILE_EXPLOSION_TIME)
 	or a
-	jp z,update_explosions_loop_next
+	jr z,update_explosions_loop_next
  	dec (ix+TILE_EXPLOSION_TIME)
-	jp z,update_explosions_loop_next		
+	jr z,update_explosions_loop_next		
  	ld hl,tile_explosion
  	cp 8
  	jp p,update_explosions_draw
@@ -115,13 +115,13 @@ explosions_restore_bg:
 explosions_restore_bg_loop:
 	ld a,(ix+TILE_EXPLOSION_TIME)
 	or a
-	jp z,explosions_restore_bg_loop_next
+	jr z,explosions_restore_bg_loop_next
  	push de
  	push bc
  		ld l,(ix+TILE_EXPLOSION_PTRL)
  		ld h,(ix+TILE_EXPLOSION_PTRH)
- 		ld e,ixl
- 		ld d,ixh
+ 		push ix
+ 		pop de
  		inc de	; TILE_EXPLOSION_BG_BUFFER
  		ex de,hl
  		ld a,4	; height
@@ -143,7 +143,7 @@ adjust_explosion_positions_after_scroll_restart:
 adjust_explosion_positions_after_scroll_restart_loop:
 	ld a,(ix)
 	or a
-	jp z,adjust_explosion_positions_after_scroll_restart_loop_next
+	jr z,adjust_explosion_positions_after_scroll_restart_loop_next
 	ld a,(ix+TILE_EXPLOSION_X)
 	sub 64
 	ld (ix+TILE_EXPLOSION_X),a

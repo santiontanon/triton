@@ -3,26 +3,25 @@
 update_scoreboard_lives:
 	; clear a small buffer to copy to the VDP:
 	ld hl,scoreboard_rendering_buffer
-	ld de,scoreboard_rendering_buffer+1
 	push hl
-	push de
-		ld (hl),0
 		ld bc,7
-		ldir
-	pop de
+		call clear_memory
 	pop hl
-	; draw the appripriate number of ships:
 	ld a,(player_lives)
 	or a
-	jp z,update_scoreboard_lives_last
+	jr z,update_scoreboard_lives_last
 	ld (hl),SCOREBOARD_LIFE_TILE
 	dec a
-	jp z,update_scoreboard_lives_last
+	jr z,update_scoreboard_lives_last
+	ld e,l
+	ld d,h
+	inc de
 	ld b,0
 	ld c,a
-	ldir
+	push hl
+		ldir
+	pop hl
 update_scoreboard_lives_last:
-	ld hl,scoreboard_rendering_buffer
 	ld de,NAMTBL2+23*32
 	ld bc,8
 	jp fast_LDIRVM
@@ -41,17 +40,17 @@ update_scoreboard_weapon_selection:
 update_scoreboard_weapon_selection_loop:
 	ld a,(hl)
 	cp (ix)
-	jp z,update_scoreboard_weapon_selection_max
+	jr z,update_scoreboard_weapon_selection_max
 	ld a,c
 	cp b
-	jp z,update_scoreboard_weapon_selection_selected
+	jr z,update_scoreboard_weapon_selection_selected
 	ld a,36
 	ld (de),a
 	inc de
 	ld a,37
 	ld (de),a
 	inc de
-	jp update_scoreboard_weapon_selection_loop_next
+	jr update_scoreboard_weapon_selection_loop_next
 
 update_scoreboard_weapon_selection_selected:
 	ld a,21
@@ -61,19 +60,19 @@ update_scoreboard_weapon_selection_selected:
 	ld (de),a
 	inc de
 	ld iyl,b
-	jp update_scoreboard_weapon_selection_loop_next
+	jr update_scoreboard_weapon_selection_loop_next
 
 update_scoreboard_weapon_selection_max:
 	ld a,c
 	cp b
-	jp z,update_scoreboard_weapon_selection_max_selected
+	jr z,update_scoreboard_weapon_selection_max_selected
 	ld a,23
 	ld (de),a
 	inc de
 	ld a,24
 	ld (de),a
 	inc de
-	jp update_scoreboard_weapon_selection_loop_next
+	jr update_scoreboard_weapon_selection_loop_next
 
 update_scoreboard_weapon_selection_max_selected:
 	ld a,40
@@ -82,7 +81,7 @@ update_scoreboard_weapon_selection_max_selected:
 	ld a,41
 	ld (de),a
 	inc de
-	jp update_scoreboard_weapon_selection_loop_next
+	jr update_scoreboard_weapon_selection_loop_next
 
 update_scoreboard_weapon_selection_loop_next:
 	inc hl
@@ -90,7 +89,7 @@ update_scoreboard_weapon_selection_loop_next:
 	inc b
 	ld a,b
 	cp 8
-	jp nz,update_scoreboard_weapon_selection_loop
+	jr nz,update_scoreboard_weapon_selection_loop
 
 	ld hl,scoreboard_rendering_buffer
 	ld de,NAMTBL2+22*32
@@ -100,7 +99,7 @@ update_scoreboard_weapon_selection_loop_next:
 	; update name:
 	ld a,iyl
 	cp #ff
-	jp z,update_scoreboard_weapon_selection_clear_name
+	jr z,update_scoreboard_weapon_selection_clear_name
 	ld hl,global_state_weapon_configuration
 	ADD_HL_A
 	ld a,(hl)
@@ -131,10 +130,8 @@ update_scoreboard_weapon_selection_clear_name:
 ;-----------------------------------------------
 update_scoreboard_credits:
 	ld hl,scoreboard_rendering_buffer
-	ld de,scoreboard_rendering_buffer+1
-	ld (hl),0
 	ld bc,15
-	ldir
+	call clear_memory
 	ld hl,scoreboard_rendering_buffer+15
 
 	ld a,(player_credits)
@@ -143,21 +140,21 @@ update_scoreboard_credits:
 	srl a
 	; number of "large credits":
 update_scoreboard_credits_large_loop:
-	jp z,update_scoreboard_credits_done_with_large
+	jr z,update_scoreboard_credits_done_with_large
 	ld (hl),39
 	dec hl
 	dec a
-	jp update_scoreboard_credits_large_loop
+	jr update_scoreboard_credits_large_loop
 update_scoreboard_credits_done_with_large:
 	ld a,c
 	and #03
 	; number of "small credits":
 update_scoreboard_credits_small_loop:
-	jp z,update_scoreboard_credits_done_with_small
+	jr z,update_scoreboard_credits_done_with_small
 	ld (hl),38
 	dec hl
 	dec a
-	jp update_scoreboard_credits_small_loop
+	jr update_scoreboard_credits_small_loop
 update_scoreboard_credits_done_with_small:
 	ld hl,scoreboard_rendering_buffer
 	ld de,NAMTBL2+23*32+16
@@ -176,54 +173,55 @@ update_scoreboard_credits_done_with_small:
 update_scoreboard_energy:
 	ld a,(player_primary_weapon_energy)
 	cp WEAPON_MAX_ENERGY
-	jp z,update_scoreboard_energy_green
+	jr z,update_scoreboard_energy_green
 	ld a,(player_primary_weapon_special_triggered)
 	or a
-	jp nz,update_scoreboard_energy_green
+	jr nz,update_scoreboard_energy_green
 
 update_scoreboard_energy_blue:
 	ld hl,scoreboard_rendering_buffer
 	ld a,(player_primary_weapon_energy)
-	ld c,34
+; 	ld c,34
     rrca
     rrca
     rrca
     and 31
-	ld b,12
+; 	ld b,12
+	ld bc,34 + 12*256
 update_scoreboard_energy_loop_blue:
 	cp 1
-	jp nz,update_scoreboard_energy_blue_not_1bar
+	jr nz,update_scoreboard_energy_blue_not_1bar
 	ld (hl),35
 	inc hl
 	dec a
 	djnz update_scoreboard_energy_loop_blue
-	jp update_scoreboard_energy_draw
+	jr update_scoreboard_energy_draw
 update_scoreboard_energy_blue_not_1bar:
 	or a
-	jp nz,update_scoreboard_energy_blue_continue
+	jr nz,update_scoreboard_energy_blue_continue
 	ld c,0
 update_scoreboard_energy_blue_continue:
 	ld (hl),c
 	inc hl
-	dec a
-	dec a
+	add a,-2
 	djnz update_scoreboard_energy_loop_blue
-	jp update_scoreboard_energy_draw
+	jr update_scoreboard_energy_draw
 
 update_scoreboard_energy_green:
 	; if (player_primary_weapon_special_triggered) == 1 or max energy:
 	ld hl,scoreboard_rendering_buffer
 	ld a,(player_primary_weapon_energy)
-	ld c,42
+; 	ld c,42
     rrca
     rrca
     rrca
     and 31
 	srl a
-	ld b,12
+; 	ld b,12
+	ld bc,42 + 12*256
 update_scoreboard_energy_loop:
 	or a	
-	jp nz,update_scoreboard_energy_continue
+	jr nz,update_scoreboard_energy_continue
 	ld c,0
 update_scoreboard_energy_continue:
 	ld (hl),c

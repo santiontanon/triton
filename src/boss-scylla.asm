@@ -32,7 +32,7 @@ update_scylla_to_phase2:
 	ld (hl),a
 	ld a,SCYLLA_HEALTH_PHASE2
 	ld (boss_health),a
-	ld a,128
+	ld a,112
 	ld (boss_hit_gfx),a	; prevent the boss being hit during the transformation
 
 update_scylla_not_hit:
@@ -284,7 +284,8 @@ update_scylla_clear:
 	ld c,200
 	ld hl,enemy_sprite_attributes+(MAX_ENEMIES-3)*4
 	ld (hl),c
-	ld hl,enemy_sprite_attributes
+	ld l,enemy_sprite_attributes&#00ff  ; assuming that h does not change!
+; 	ld hl,enemy_sprite_attributes
 	ld (hl),c
 	ld hl,enemy_sprite_attributes+4
 	ld (hl),c

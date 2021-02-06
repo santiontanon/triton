@@ -36,7 +36,7 @@ public class TSVMusic {
     
     public static void main(String args[]) throws Exception
     {        
-        //createTritonSongs();
+        createTritonSongs();
  
         //playTSVMusic("data/music/triton-story.csv", 10);
         //playTSVMusic("data/music/triton-start.csv", 10);
@@ -47,7 +47,7 @@ public class TSVMusic {
         //playTSVMusic("data/music/triton-tech.csv", 11);
         //playTSVMusic("data/music/triton-temple.csv", 7);
         //playTSVMusic("data/music/triton-water.csv", 9);
-        playTSVMusic("data/music/triton-ending.csv", 11);
+//        playTSVMusic("data/music/triton-ending.csv", 11);
     }
     
     

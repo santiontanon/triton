@@ -172,7 +172,7 @@ set_up_tile_type_tables_loop2:
         inc hl
         ld a,4
 set_up_tile_type_tables_loop1:
-        push af
+;         push af
         push bc
             push de
                 ldir
@@ -182,7 +182,7 @@ set_up_tile_type_tables_loop1:
                 add hl,bc
             ex de,hl
         pop bc
-        pop af
+;         pop af
         dec a
         jr nz,set_up_tile_type_tables_loop1
     pop af

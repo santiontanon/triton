@@ -9,7 +9,7 @@ any_enemy_or_power_pellet:
 any_enemy_or_power_pellet_enemies_loop:
 	ld a,(hl)
 	or a
-	jp nz,any_enemy_or_power_pellet_one_found
+	jr nz,any_enemy_or_power_pellet_one_found
 	add hl,de
 	djnz any_enemy_or_power_pellet_enemies_loop
 
@@ -19,7 +19,7 @@ any_enemy_or_power_pellet_enemies_loop:
 any_enemy_or_power_pellet_pellet_loop:
 	ld a,(hl)
 	or a
-	jp nz,any_enemy_or_power_pellet_one_found
+	jr nz,any_enemy_or_power_pellet_one_found
 	add hl,de
 	djnz any_enemy_or_power_pellet_pellet_loop
 
@@ -70,11 +70,10 @@ state_level_complete:
 	call clearScreenLeftToRight_iyl_rows_no_sprites
 
 	; print level complete message and credits:
- 	ld c,TEXT_SYSTEM_CLEAR_BANK
+ 	ld bc,TEXT_SYSTEM_CLEAR_BANK + 8*8*256
  	ld a,TEXT_SYSTEM_CLEAR_IDX
  	ld de,CHRTBL2+FIRST_TILE_FOR_IN_GAME_TEXT*8
  	ld iyl,COLOR_WHITE*16
- 	ld b,8*8
  	call draw_text_from_bank
  	ld hl,NAMTBL2+6*32+12
  	ld b,8
@@ -136,11 +135,10 @@ state_level_complete_move_credit_loop:
 	halt
 
 	; credits:
-	ld c,TEXT_MONEY_BANK
+	ld bc,TEXT_MONEY_BANK + 5*8*256
 	ld a,TEXT_MONEY_IDX
 	ld de,CHRTBL2+(FIRST_TILE_FOR_IN_GAME_TEXT+8)*8
 	ld iyl,COLOR_WHITE*16
- 	ld b,5*8
  	call draw_text_from_bank
 	ld a,(global_state_credits)
 	ld de,CHRTBL2+(FIRST_TILE_FOR_IN_GAME_TEXT+13)*8

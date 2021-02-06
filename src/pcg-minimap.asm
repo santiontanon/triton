@@ -2,11 +2,9 @@
 generate_minimap:
 	; clear minimap:
 	ld hl,global_state_minimap
-	ld de,global_state_minimap+1
 	ld a,31
-	ld (hl),a
 	ld bc,MINIMAP_WIDTH*(MINIMAP_HEIGHT+1)-1
-	ldir
+	call clear_memory_a
 
 	; generate the 3 random points (NW, middle, SE):
 	call random
@@ -22,30 +20,31 @@ generate_minimap:
 	call random
 	and #06
 	add a,8
-	ld (pcg_minimap_middle_point),a
+	ld de,pcg_minimap_middle_point
+	ld (de),a
 	ld l,a
 	ld a,4
-	ld (pcg_minimap_middle_point+1),a
+	inc de
+	ld (de),a
 	ld h,a
 	call generate_minimap_put_planet
 
 	call random
 	and #06
 	add a,16
-	ld (pcg_minimap_se_point),a
+	ld de,pcg_minimap_se_point
+	ld (de),a
 	ld l,a
 	call random
 	and #02
 	add a,6
-	ld (pcg_minimap_se_point+1),a
+	inc de
+	ld (de),a
 	ld h,a
 	call generate_minimap_put_planet
 
 	; path from ITHAKI-NW
-	ld hl,pcg_minimap_nw_point
-	ld e,(hl)
-	inc hl
-	ld d,(hl)
+	ld de,(pcg_minimap_nw_point)
 	ld hl,(MINIMAP_HEIGHT-1)*256 + 0
 	push de
 		call generate_minimap_path
@@ -56,10 +55,7 @@ generate_minimap:
 	call generate_minimap_path
 
 	; path from ITHAKI-middle
-	ld hl,pcg_minimap_middle_point
-	ld e,(hl)
-	inc hl
-	ld d,(hl)
+	ld de,(pcg_minimap_middle_point)
 	ld hl,(MINIMAP_HEIGHT-1)*256 + 0
 	push de
 		call generate_minimap_path
@@ -70,10 +66,7 @@ generate_minimap:
 	call generate_minimap_path
 
 	; path from ITHAKI-SE
-	ld hl,pcg_minimap_se_point
-	ld e,(hl)
-	inc hl
-	ld d,(hl)
+	ld de,(pcg_minimap_se_point)
 	ld hl,(MINIMAP_HEIGHT-1)*256 + 0
 	push de
 		call generate_minimap_path
@@ -84,31 +77,21 @@ generate_minimap:
 	call generate_minimap_path
 
 	; path from NW-middle
-	ld hl,pcg_minimap_nw_point
-	ld e,(hl)
-	inc hl
-	ld d,(hl)
-	push de
-		ld hl,pcg_minimap_middle_point
-		ld e,(hl)
-		inc hl
-		ld d,(hl)
-	pop hl
+	ld hl,(pcg_minimap_nw_point)
+	ld de,(pcg_minimap_middle_point)
 	push de
 		call generate_minimap_path
 
 	; path from middle-SE
-		ld hl,pcg_minimap_se_point
-		ld e,(hl)
-		inc hl
-		ld d,(hl)
+		ld de,(pcg_minimap_se_point)
 	pop hl
 	call generate_minimap_path
 
 	; add the fixed content:
 	ld hl,global_state_minimap+(MINIMAP_HEIGHT-1)*MINIMAP_WIDTH
 	ld (hl),81	; ITHAKI
-	ld hl,global_state_minimap+(MINIMAP_HEIGHT-2)*MINIMAP_WIDTH+1
+; 	ld hl,global_state_minimap+(MINIMAP_HEIGHT-2)*MINIMAP_WIDTH+1
+	ld l,(global_state_minimap+(MINIMAP_HEIGHT-2)*MINIMAP_WIDTH+1) & #00ff  ; this assumes h doesn't change
 	ld (hl),100	; CONNECTION_SW_NE (green)
 	ld hl,global_state_minimap+MINIMAP_WIDTH-2
 	ld (hl),81	; TRITON
@@ -118,7 +101,8 @@ generate_minimap:
 	ld (hl),88	; TEMPLE PLANET
 	ld hl,global_state_minimap+(MINIMAP_WIDTH-5)+MINIMAP_WIDTH
 	ld (hl),95	; CONNECTION_SW_NE
-	ld hl,global_state_minimap+(MINIMAP_WIDTH-5)+2*MINIMAP_WIDTH
+; 	ld hl,global_state_minimap+(MINIMAP_WIDTH-5)+2*MINIMAP_WIDTH
+	ld l,(global_state_minimap+(MINIMAP_WIDTH-5)+2*MINIMAP_WIDTH) & #00ff	; this assumes h doesn't change
 	ld (hl),84	; SYSTEM_NEBULA_RIGHT
 	dec hl
 	ld (hl),83	; SYSTEM_NEBULA
@@ -149,8 +133,10 @@ generate_minimap_boss_position_loop:
 	or a
 	jr z,generate_minimap_boss_position_found
 	call random
-	and #01
-	jr z,generate_minimap_boss_position_skip
+; 	and #01
+; 	jr z,generate_minimap_boss_position_skip
+	rra
+	jr c,generate_minimap_boss_position_skip
 generate_minimap_boss_position_found:
 	ld e,c
 generate_minimap_boss_position_skip:
@@ -310,7 +296,6 @@ generate_minimap_path_no_protected_3:
 		jr c,generate_minimap_path_loopback_pop
 generate_minimap_path_no_protected_4:
 	pop hl
-
 
 	; place connector:
 	call generate_minimap_path_advance

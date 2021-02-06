@@ -14,27 +14,33 @@ state_title_screen:
 		ld de,buffer
 		call unpack_compressed
 		ld hl,buffer
-		ld de,CHRTBL2+8
 		ld bc,1056
-		call fast_LDIRVM
-		ld hl,buffer
-		ld de,CHRTBL2+256*8+8
-		ld bc,1056
-		call fast_LDIRVM
+		push hl
+		push bc
+			ld de,CHRTBL2+8
+			call fast_LDIRVM
+		pop bc
+		pop hl
+		push bc
+			ld de,CHRTBL2+256*8+8
+			call fast_LDIRVM
+		pop bc
 		ld hl,buffer+1056
-		ld de,CLRTBL2+8
-		ld bc,1056
-		call fast_LDIRVM
-		ld hl,buffer+1056
+		push hl
+		push bc
+			ld de,CLRTBL2+8
+			call fast_LDIRVM
+		pop bc
+		pop hl
 		ld de,CLRTBL2+256*8+8
-		ld bc,1056
 		call fast_LDIRVM
 
 		; name table:
 		ld hl,title_screen_data_plt
 		ld de,buffer
-		call unpack_compressed
-		ld hl,buffer
+		push de
+			call unpack_compressed
+		pop hl
 		ld de,NAMTBL2+32
 		ld bc,14*32
 		call fast_LDIRVM
@@ -68,13 +74,11 @@ state_title_screen:
 	call draw_text_from_bank_16
 
 	; draw version:
-	ld c,TEXT_VERSION_BANK
+	ld bc,TEXT_VERSION_BANK + 4*8*256
 	ld a,TEXT_VERSION_IDX
 	ld de,CHRTBL2+(512+7*32)*8
 	ld iyl,COLOR_WHITE*16
-	ld b,4*8
 	call draw_text_from_bank
-
 
 	ld bc,300	; after some time, jump to story
 state_title_screen_loop:
@@ -88,8 +92,10 @@ state_title_screen_loop:
 	    call update_keyboard_buffers
 	pop bc
     ld a,(keyboard_line_clicks)
-    bit 0,a
-    jr nz,state_title_screen_loop_done
+;     bit 0,a
+;     jr nz,state_title_screen_loop_done
+    rra
+    jr c,state_title_screen_loop_done
 
 	ld a,(interrupt_cycle)
 	and #10
@@ -114,15 +120,6 @@ state_title_screen_loop_clear:
 	jr state_title_screen_loop
 
 state_title_screen_loop_done:
-
-; 	ld ix,decompress_start_song_from_page1
-; 	call call_from_page1
-;     ld a,(isComputer50HzOr60Hz)
-;     add a,a
-;     add a,8	; 8 if 50Hz, 10 if 60Hz
-;     call PlayMusic
-
-
 	call clearScreenLeftToRight
 	jp state_mission_screen_new_game
 

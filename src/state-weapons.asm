@@ -29,19 +29,17 @@ state_weapons_screen:
 		call draw_text_from_bank_16
 
 		; text "equipped":
-		ld c,TEXT_EQUIPPED_BANK
+		ld bc,TEXT_EQUIPPED_BANK + 5*8*256
 		ld a,TEXT_EQUIPPED_IDX
 		ld de,CHRTBL2+(1*32+6)*8
 		ld iyl,COLOR_DARK_YELLOW*16
-		ld b,5*8
 		call draw_text_from_bank
 
 		; text "UPGRADES":
-		ld c,TEXT_UPGRADE_BANK
+		ld bc,TEXT_UPGRADE_BANK + 5*8*256
 		ld a,TEXT_UPGRADE_IDX
 		ld de,CHRTBL2+(12*32+25)*8
 		ld iyl,COLOR_DARK_YELLOW*16
-		ld b,5*8
 		call draw_text_from_bank
 
 		; text "credits":
@@ -63,11 +61,10 @@ state_weapons_screen:
 		ld bc,3*256+4*8
 		ld a,COLOR_DARK_BLUE
 		call draw_button
-		ld c,TEXT_BACK_BANK
+		ld bc,TEXT_BACK_BANK + 4*8*256
 		ld a,TEXT_BACK_IDX
 		ld de,CHRTBL2+(32*2+26)*8
 		ld iyl,COLOR_DARK_BLUE + COLOR_WHITE*16
-		ld b,4*8
 		call draw_text_from_bank
 
 		; draw selected weapon list:
@@ -161,8 +158,10 @@ state_weapons_move_cursor:
 	jp nz,state_weapons_move_cursor_right
 	bit KEY_LEFT_BIT,a
 	jp nz,state_weapons_move_cursor_left
-	bit KEY_BUTTON1_BIT,a
-	jr nz,state_weapons_move_cursor_button1
+; 	bit KEY_BUTTON1_BIT,a
+; 	jr nz,state_weapons_move_cursor_button1
+	rra
+	jr c,state_weapons_move_cursor_button1
 	ld a,(keyboard_line_clicks+2)
 	bit KEY_BUTTON2_BIT,a
 	jr nz,state_weapons_move_cursor_button2
@@ -341,7 +340,7 @@ state_weapons_move_cursor_button1_area3:
 	  	add hl,bc
 	 	ld a,(hl)
 	 	cp #ff
-	 	jp z,state_weapons_move_cursor_button1_area3_not_equipable 	; not equipable
+	 	jr z,state_weapons_move_cursor_button1_area3_not_equipable 	; not equipable
 	 	ld hl,global_state_weapon_configuration
 	 	ld c,a	; b is already 0
 	 	add hl,bc
@@ -1067,6 +1066,7 @@ state_weapons_draw_equipped_weapons_clear_weapon_level:
 	pop de
 	ld bc,3*8
 	push de
+		xor a
 		call render_text_draw_buffer
 	pop de
 	jr state_weapons_draw_equipped_weapons_clear_weapon_level_continue
@@ -1126,7 +1126,7 @@ change_button_color:
 draw_weapon_level:
 	push de
 		push af
-			call clear_text_rendering_buffer
+		call clear_text_rendering_buffer
 		pop af
 
 		ld hl,text_buffer
@@ -1268,10 +1268,8 @@ ui_draw_frame_x_loop_continue:
 			jr nz,ui_draw_frame_x_loop
 
 		pop hl
-		push bc
-			ld bc,32*8
-			add hl,bc	
-		pop bc
+		ld bc,32*8
+		add hl,bc	
 	pop bc
 	djnz ui_draw_frame_y_loop
 	ret
@@ -1337,6 +1335,7 @@ draw_weapon_gfx_narrow_clear_text:
     push de
 		call clear_text_rendering_buffer
 	pop de
+	xor a
 	ld bc,6*8
 	jp render_text_draw_buffer
 

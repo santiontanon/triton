@@ -249,6 +249,7 @@ Execute:
     ; Silence, init keyboard, and clear config:
     xor a
     ld (CLIKSW),a
+    ld (deterministic),a
     ; Change background colors:
     ld (BAKCLR),a
     ld (BDRCLR),a
@@ -319,6 +320,7 @@ decompress_compressed_code:
     include "options.asm"
     include "load-level-types.asm"
     include "generate-offset-tiles.asm"
+    include "password.asm"
 
     include "boss-common.asm"
     ; this is commented out as this code is compressed:
@@ -339,6 +341,7 @@ decompress_compressed_code:
 ;     include "state-weapons.asm"
 ;     include "state-gameover.asm"
 ;     include "state-ending.asm"
+;     include "state-password.asm"
 EndofCode:
 
 
@@ -745,9 +748,12 @@ keyboard_line_state_prev:   ds virtual 3
 keyboard_line_clicks:       equ keyboard_line_state+1
 randSeedIndex:              ds virtual 1
 randData:                   ds virtual 2
+deterministic:              ds virtual 1
 text_skip:                  ds virtual 1
 
 ; Global game state (should be reset when game starts):
+global_rand_seed:           ds virtual 2
+
 global_state_minimap:       ds virtual MINIMAP_WIDTH*(MINIMAP_HEIGHT+1) ; we make it one row bigger
                                                         ; so that we don't need to check if we are in the bottom row (saves code)
 global_state_credits:       ds virtual 1
@@ -787,6 +793,7 @@ MUSIC_transpose:                    ds virtual 1
 MUSIC_time_step_required:           ds virtual 1    ; 39
 end_of_sound_variables:
 music_buffer:                       ds virtual 1152
+
 
 END_OF_COMMON_RAM:
 
@@ -850,6 +857,7 @@ PCG_next_pattern_x:         ds virtual 1
 
 scroll_x_half_pixel:        ds virtual 1   ; incrementing this counter twice, moves the scroll by one pixel
 scroll_x_tile:              ds virtual 1
+scroll_restart:             ds virtual 1
 
 in_game_sprite_attributes:
 player_sprite_attributes:                   ds virtual 4*3

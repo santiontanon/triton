@@ -117,14 +117,15 @@ state_game_start_enemy_bullet_init_loop:
 		ld (ix+ENEMY_BULLET_STRUCT_SPRITE_PTR+1),h
 		ld de,ENEMY_BULLET_STRUCT_SIZE
 		add ix,de
-		ld de,4
+		ld e,4	; no need to modify d, as itis 0 here
 		add hl,de
 		djnz state_game_start_enemy_bullet_init_loop
 
 		xor a
 		ld hl,player_secondary_bullets+PLAYER_SECONDARY_BULLET_STRUCT_SPRITE_IDX
 		ld de,PLAYER_SECONDARY_BULLET_STRUCT_SIZE
-		ld b,MAX_PLAYER_SECONDARY_BULLETS
+		ld b,e  ; MAX_PLAYER_SECONDARY_BULLETS happens to be == PLAYER_SECONDARY_BULLET_STRUCT_SIZE
+; 		ld b,MAX_PLAYER_SECONDARY_BULLETS
 state_game_start_player_secondary_bullet_init_loop:
 		ld (hl),a
 		add hl,de
@@ -188,7 +189,7 @@ state_game_start_starfield_init_loop:
 		inc bc
 		ld a,c
 		cp 31
-		jp nz,state_game_start_starfield_init_loop
+		jr nz,state_game_start_starfield_init_loop
 
 		call load_option_weapon_tiles		
 
@@ -273,7 +274,7 @@ game_loop:
 	call update_scroll_and_pcg
     ld a,(scroll_x_half_pixel)
     and #01
-    jp z,game_loop_even
+    jr z,game_loop_even
 
     ; ---- odd cycles: ----
 game_loop_odd:
@@ -292,7 +293,7 @@ game_loop_odd:
 	    ld a,(redraw_power_pellets_signal)
 	    add a,(hl)
 	    or a
-	    jp z,game_loop_no_power_pellet_redraw
+	    jr z,game_loop_no_power_pellet_redraw
 game_loop_power_pellet_redraw:
 	    ; clear the redraw signals:
 	    xor a
@@ -313,16 +314,21 @@ game_loop_no_power_pellet_redraw:
 	 	call starfield_update_odd
 game_loop_odd_continue:	
 
-	    ld a,(scroll_x_half_pixel)
-	    dec a
-	    jp nz,game_loop_skip_player_bullet_adjust
-		ld a,(scroll_x_tile)
-		and #3f
-		call z,game_loop_adjust_positions_after_scroll_restart
-game_loop_skip_player_bullet_adjust:
+		ld hl,scroll_restart
+		ld a,(hl)
+		or a
+		ld (hl),0
+		call nz,game_loop_adjust_positions_after_scroll_restart
+; 	    ld a,(scroll_x_half_pixel)
+; 	    dec a
+; 	    jr nz,game_loop_skip_player_bullet_adjust
+; 		ld a,(scroll_x_tile)
+; 		and #3f
+; 		call z,game_loop_adjust_positions_after_scroll_restart
+; game_loop_skip_player_bullet_adjust:
 		call update_explosions
 		call update_player_bullets
-	    jp game_loop_continue
+	    jr game_loop_continue
 
 	; ---- even cycles: ----
 game_loop_even:
@@ -361,7 +367,7 @@ check_for_weapon_change:
 check_for_weapon_change_loop:
 	ld a,(hl)
 	or a
-	jp z,check_for_weapon_change_next
+	jr z,check_for_weapon_change_next
 	inc hl
 	ld a,(hl)
 	dec hl
@@ -380,35 +386,33 @@ check_for_weapon_change_next:
 game_pause:
 	call PauseMusic
 	; print the "pause" message
- 	ld c,TEXT_PAUSE_BANK
+ 	ld bc,TEXT_PAUSE_BANK + 5*8*256
  	ld a,TEXT_PAUSE_IDX
  	ld de,CHRTBL2+FIRST_TILE_FOR_IN_GAME_TEXT*8
  	ld iyl,COLOR_WHITE*16
- 	ld b,5*8
  	call draw_text_from_bank
  	ld hl,NAMTBL2+7*32+14
  	ld b,5
  	ld a,FIRST_TILE_FOR_IN_GAME_TEXT
  	call draw_text_name_table_ingame
 
-	ld c,TEXT_Q_QUIT_BANK
+	ld bc,TEXT_Q_QUIT_BANK + 5*8*256
 	ld a,TEXT_Q_QUIT_IDX
 	ld de,CHRTBL2+(FIRST_TILE_FOR_IN_GAME_TEXT+5)*8
 	ld iyl,COLOR_WHITE*16
-	ld b,5*8
 	call draw_text_from_bank
 
 game_pause_loop:
 	halt	
 	ld a,(interrupt_cycle)
 	bit 4,a
-	jp z,game_pause_loop_draw_pause
+	jr z,game_pause_loop_draw_pause
 game_pause_loop_clear_pause:
 	xor a
 	ld hl,NAMTBL2+6*32+14
 	ld bc,5
 	call fast_FILVRM
-	jp game_pause_loop_draw_pause_done
+	jr game_pause_loop_draw_pause_done
 game_pause_loop_draw_pause:
 	ld hl,NAMTBL2+6*32+14
 	ld b,5
@@ -423,7 +427,7 @@ game_pause_loop_draw_pause_done:
     jr nz,game_pause_loop_exit
     ld a,(keyboard_line_clicks+KEY_Q_BYTE)
     bit KEY_Q_BIT,a
-    jp nz,game_quit
+    jr nz,game_quit
 	jr game_pause_loop
 game_pause_loop_exit:
     jp ResumeMusic
@@ -437,7 +441,7 @@ game_life_lost:
 	dec (hl)
 	ld a,(hl)
 	inc a
-	jp z,game_quit
+	jr z,game_quit
 	call update_scoreboard_lives
 	jp respawn_player
 
@@ -494,12 +498,13 @@ update_scroll_and_pcg:
 	inc a
 	and #0f
 	ld (scroll_x_half_pixel),a
-	jp nz,update_scroll_pcg_cycle_no_tile_increase
+	jr nz,update_scroll_pcg_cycle_no_tile_increase
 	ld a,(scroll_x_tile)
+; 	ld (scroll_x_tile_prev),a	; store it for spawning enemies/power pellets/etc.
 	inc a
 	and #3f
 	ld (scroll_x_tile),a
-	call z,adjust_enemy_positions_after_scroll_restart
+	call z,adjust_enemy_positions_after_scroll_restart	; also sets "(scroll_restart) = 1"
 update_scroll_pcg_cycle_no_tile_increase:
 
 	ld a,(scroll_x_tile)
@@ -543,11 +548,9 @@ update_scroll_pcg_update_frame1:
 	dec a
 	jp z,PCG_spawnTileBasedEnemies_2rows
 	; pattern copies (all together for now):
-	dec a
-	dec a
+	add a,-2
 	ret z	; frame 1.4
-	dec a
-	dec a
+	add a,-2
 	ret z	; frame 1.6
 	dec a
 	ret nz
@@ -556,18 +559,18 @@ update_scroll_pcg_update_frame1:
 update_scroll_pcg_update_frame8:
 	ld a,(scroll_x_half_pixel)
 	cp 3
-	jp z,update_scroll_pcg_update_frame1_copy1
+	jr z,update_scroll_pcg_update_frame1_copy1
 	cp 4
-	jp z,update_scroll_pcg_update_frame1_copy2
+	jr z,update_scroll_pcg_update_frame1_copy2
 	ret
 
 update_scroll_pcg_update_frame1_copy2:
 	; copy:
 	ld a,(scroll_x_tile)
 	sub PCG_PATTERN_WIDTH+8
-	jp z,update_scroll_pcg_cycle2_1
+	jr z,update_scroll_pcg_cycle2_1
 	cp PCG_PATTERN_WIDTH
-	jp z,update_scroll_pcg_cycle2_2
+	jr z,update_scroll_pcg_cycle2_2
 	ret
 
 
@@ -575,11 +578,11 @@ update_scroll_pcg_update_frame1_copy1:
 	; copy:
 	ld a,(scroll_x_tile)
 	sub 8
-	jp z,update_scroll_pcg_cycle_0
+	jr z,update_scroll_pcg_cycle_0
 	cp PCG_PATTERN_WIDTH
-	jp z,update_scroll_pcg_cycle_1
+	jr z,update_scroll_pcg_cycle_1
 	cp PCG_PATTERN_WIDTH*2
-	jp z,update_scroll_pcg_cycle_2
+	jr z,update_scroll_pcg_cycle_2
 	cp PCG_PATTERN_WIDTH*3
 	ret nz
 

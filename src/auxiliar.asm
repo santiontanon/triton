@@ -89,20 +89,55 @@ vdpLoop:
 ;-----> Generate a random number
 ; ouput a=answer 0<=a<=255
 ; all registers are preserved except: af
+; random:
+;     push    hl
+;     push    de
+;         ld      hl,(randData)
+;         ld      a,r
+;         ld      d,a
+;         ld      e,(hl)
+;         add     hl,de
+;         add     a,l
+;         xor     h
+;         ld      (randData),hl
+;     pop     de
+;     pop     hl
+;     ret
+
+
+; Source: http://wikiti.brandonw.net/index.php?title=Z80_Routines:Math:Random
+; 16-bit xorshift pseudorandom number generator by John Metcalf
+; 20 bytes, 86 cycles (excluding ret)
+; returns   a = pseudorandom number
+; generates 16-bit pseudorandom numbers with a period of 65535
+; using the xorshift method:
+; hl ^= hl << 7
+; hl ^= hl >> 9
+; hl ^= hl << 8
+; some alternative shift triplets which also perform well are:
+; 6, 7, 13; 7, 9, 13; 9, 7, 13.
+
 random:
-    push    hl
-    push    de
-        ld      hl,(randData)
-        ld      a,r
-        ld      d,a
-        ld      e,(hl)
-        add     hl,de
-        add     a,l
-        xor     h
-        ld      (randData),hl
-    pop     de
-    pop     hl
+    push hl
+        ld hl,(randData)
+        ld a,h
+        rra
+        ld a,l
+        rra
+        xor h
+        ld h,a
+        ld a,l
+        rra
+        ld a,h
+        rra
+        xor l
+        ld l,a
+        xor h
+        ld h,a
+        ld (randData),hl
+    pop hl
     ret
+
 
 ; only modifies af, and hl
 randomSeedUpdate:
@@ -110,7 +145,7 @@ randomSeedUpdate:
     ld a,(hl)
     inc (hl)
     and #01
-    jp z,randomSeedUpdate2
+    jr z,randomSeedUpdate2
     ld a,r
     xor #66
     ld (randData),a
@@ -151,3 +186,18 @@ wait_b_halts:
     halt
     djnz wait_b_halts
     ret
+
+
+;-----------------------------------------------
+; hl: memory to clear
+; bc: bytes to clear-1
+clear_memory:
+    xor a
+clear_memory_a:
+    ld d,h
+    ld e,l
+    inc de
+    ld (hl),a
+    ldir
+    ret
+

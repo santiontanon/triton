@@ -55,14 +55,12 @@ state_story:
 		call unpack_compressed
 	call enable_VDP_output
 
-	push iy
-		ld ix,decompress_story_song_from_page1
-		call call_from_page1
-	    ld a,(isComputer50HzOr60Hz)
-	    add a,a
-	    add a,10	; 10 if 50Hz, 12 if 60Hz
-	    call PlayMusic
-	pop iy
+	ld ix,decompress_story_song_from_page1
+	call call_from_page1
+    ld a,(isComputer50HzOr60Hz)
+    add a,a
+    add a,10	; 10 if 50Hz, 12 if 60Hz
+    call PlayMusic
 
 	; scene 1:
 	ld iyh,24*8	
@@ -171,8 +169,10 @@ state_story_loop_continue:
 	pop bc
 	; wait a few seconds and skip to the menu:
     ld a,(keyboard_line_clicks)
-    bit 0,a
-    jr z,state_story_loop
+;     bit 0,a
+;     jr z,state_story_loop
+	rra
+	jr nc,state_story_loop
     ret
 
 

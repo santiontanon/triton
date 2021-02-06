@@ -9,6 +9,15 @@ JP_IF_RANDOM_GEQ: MACRO ?threshold_ptr,?label
 	jp nc,?label
 	ENDM
 
+
+JP_IF_RANDOM_GEQ_NO_PUSH_HL: MACRO ?threshold_ptr,?label
+	call random
+	ld hl,?threshold_ptr
+	sub (hl)
+	jp nc,?label
+	ENDM
+
+
 RET_IF_RANDOM_GEQ: MACRO ?threshold_ptr
 	call random
 	push hl
@@ -366,7 +375,8 @@ PCG_spawnTileBasedEnemies_turret_bottom:
 			ld (ix+TILE_ENEMY_STRUCT_PTRH),h
 		pop hl
 
-		ld bc,-(PCG_PATTERN_WIDTH+1)
+; 		ld bc,-(PCG_PATTERN_WIDTH+1)
+		ld c,(-(PCG_PATTERN_WIDTH+1)) & #00ff  ; assuming b will not change
 
 		add hl,bc	; start position
 		ex de,hl

@@ -39,11 +39,9 @@ state_game_ending:
 		; bank 2 was already cleared by set_bitmap_mode above
 
 		; render all the text lines in a buffer:
-		ld (hl),0
 		ld hl,buffer
-		ld de,buffer+1
 		ld bc,16*8*14-1	; we clear 13 lines (one more than needed, to have an empty line at the end)
-		ldir
+		call clear_memory
 
 		ld b,13
 		ld hl,game_ending_text
@@ -56,7 +54,7 @@ state_game_ending_pre_render_text_loop:
 			inc hl
 			push hl
 				push de
-				    ld de,text_buffer
+; 				    ld de,text_buffer
  				    call get_text_from_bank
  				    call clear_text_rendering_buffer
 					ld hl,text_buffer
@@ -113,9 +111,8 @@ state_game_ending_loop:
 
 	; scroll the middle of page 1 pixel up:
     call ending_scroll_bank1_up
-
     ; draw one line of text at the bottom:
-    call ending_draw_next_text_line
+;     call ending_draw_next_text_line  ; already called from the previous function
 
     ; at certain times draw/delete the cutscene images in bank 0:
     ld a,(ending_timer)
@@ -194,7 +191,7 @@ ending_scroll_bank1_up_loop:
 		add hl,bc
 	pop bc
 	djnz ending_scroll_bank1_up_loop
-	ret
+; 	ret
 
 
 ;-----------------------------------------------
@@ -305,7 +302,8 @@ load_groupped_tile_data_into_vdp_bank0_loop:
 			add hl,bc
 			ex de,hl
 		pop hl
-		ld bc,8
+; 		ld bc,8
+		ld b,0	; assuming c == 8
 		add hl,bc
 	pop bc
 	djnz load_groupped_tile_data_into_vdp_bank0_loop
