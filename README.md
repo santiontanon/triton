@@ -8,6 +8,10 @@ You will need an MSX emulator to play the game on a PC, for example OpenMSX: htt
 
 Or you can **play directly on your browser** thanks to Arnaud De Klerk (TFH)!: https://www.file-hunter.com/MSXdev/index.php?id=themenacefromtriton
 
+<img src="https://raw.githubusercontent.com/santiontanon/triton/master/media/cover.jpg" alt="cover" width="640"/> 
+
+Cover art by daainart
+
 ## Introduction
 
 The Menace from Triton is an MSX1 game, in a 48KB ROM cartridge format, built to participate in the MSXDev'20 competition ( https://www.msxdev.org ). The dificulty is tuned for 60Hz machines. If you play in a 50Hz machine, consider as if you are playing an "easy" mode of the game :)
