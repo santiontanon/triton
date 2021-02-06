@@ -1,6 +1,8 @@
 ## The Menace from Triton (MSX) by Santiago Ontañón Villar
 
-Download latest compiled ROMs (v1.1) from: https://github.com/santiontanon/triton/releases/tag/v1.1
+Download latest compiled ROMs (v1.2) from: https://github.com/santiontanon/triton/releases/tag/v1.2
+
+**Buy** the physical edition from: http://www.matranet.net/boutique/msx/card/triton/triton.php
 
 You will need an MSX emulator to play the game on a PC, for example OpenMSX: http://openmsx.org
 
